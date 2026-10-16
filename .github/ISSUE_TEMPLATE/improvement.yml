@@ -1,0 +1,16 @@
+name: ✨ Melhoria
+description: Aprimorar algo que já existe
+title: "[Melhoria] "
+labels: [enhancement]
+body:
+  - type: textarea
+    id: context
+    attributes: { label: Contexto, description: O que existe hoje e por que melhorar }
+    validations: { required: true }
+  - type: textarea
+    id: scope
+    attributes: { label: Escopo, value: "- [ ] " }
+    validations: { required: true }
+  - type: textarea
+    id: acceptance
+    attributes: { label: Critérios de aceite }

@@ -1,0 +1,19 @@
+name: 🐛 Correção
+description: Algo não funciona como deveria
+title: "[Correção] "
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes: { label: O que aconteceu?, description: Comportamento atual e esperado }
+    validations: { required: true }
+  - type: textarea
+    id: steps
+    attributes: { label: Como reproduzir, placeholder: "1. Acesse...\n2. Clique em..." }
+    validations: { required: true }
+  - type: input
+    id: env
+    attributes: { label: Navegador / dispositivo }
+  - type: input
+    id: trace
+    attributes: { label: Link do Sentry / Datadog / New Relic (se houver) }

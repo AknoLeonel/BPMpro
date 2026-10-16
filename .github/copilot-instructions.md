@@ -1,0 +1,1 @@
+Siga as regras de [AGENTS.md](../AGENTS.md): toda tarefa nasce como Issue, é entregue via PR que menciona a Issue (`Closes #N`), e toda UI segue o Motion System (skeleton, lazy loading, animações de entrada/saída/carregamento/progresso).
