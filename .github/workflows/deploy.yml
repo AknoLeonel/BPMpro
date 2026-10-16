@@ -1,0 +1,64 @@
+name: Deploy
+
+# Deploy é governado por PRs:
+#  - PR aberto/atualizado → Preview (URL comentada no PR)
+#  - merge na main       → Produção
+# Requer secrets: VERCEL_TOKEN, VERCEL_ORG_ID, VERCEL_PROJECT_ID (sem eles o job é pulado).
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  push:
+    branches: [main]
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write
+  deployments: write
+
+env:
+  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: ${{ github.event_name == 'push' && 'production' || 'preview' }}
+    steps:
+      - name: Verifica credenciais
+        id: guard
+        env:
+          TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: echo "enabled=$([ -n "$TOKEN" ] && echo true || echo false)" >> "$GITHUB_OUTPUT"
+      - uses: actions/checkout@v4
+        if: steps.guard.outputs.enabled == 'true'
+      - uses: pnpm/action-setup@v4
+        if: steps.guard.outputs.enabled == 'true'
+      - uses: actions/setup-node@v4
+        if: steps.guard.outputs.enabled == 'true'
+        with: { node-version-file: .nvmrc, cache: pnpm }
+      - name: Deploy na Vercel
+        if: steps.guard.outputs.enabled == 'true'
+        id: vercel
+        env:
+          TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          PROD: ${{ github.event_name == 'push' && '--prod' || '' }}
+          TARGET: ${{ github.event_name == 'push' && 'production' || 'preview' }}
+        run: |
+          npx vercel@latest pull --yes --environment="$TARGET" --token="$TOKEN"
+          npx vercel@latest build $PROD --token="$TOKEN"
+          url=$(npx vercel@latest deploy --prebuilt $PROD --token="$TOKEN")
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+      - name: Comenta URL do preview no PR
+        if: steps.guard.outputs.enabled == 'true' && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            await github.rest.issues.createComment({
+              ...context.repo,
+              issue_number: context.issue.number,
+              body: `🚀 Preview: ${{ steps.vercel.outputs.url }}`,
+            });

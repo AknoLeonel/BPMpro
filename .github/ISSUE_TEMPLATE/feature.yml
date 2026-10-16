@@ -1,0 +1,16 @@
+name: 🚀 Nova função
+description: Algo novo para o produto
+title: "[Nova função] "
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes: { label: Problema / oportunidade }
+    validations: { required: true }
+  - type: textarea
+    id: scope
+    attributes: { label: Escopo, value: "- [ ] " }
+    validations: { required: true }
+  - type: textarea
+    id: acceptance
+    attributes: { label: Critérios de aceite }
