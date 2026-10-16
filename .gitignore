@@ -1,0 +1,16 @@
+node_modules
+.next
+out
+coverage
+reports
+.stryker-tmp
+test-results
+playwright-report
+blob-report
+*.tsbuildinfo
+next-env.d.ts
+.env
+.env*.local
+.DS_Store
+.vercel
+.sentryclirc

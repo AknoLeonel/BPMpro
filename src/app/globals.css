@@ -1,0 +1,101 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+
+  /* Verde BPM — movimento, confiança, Brasil */
+  --color-brand-50: oklch(0.97 0.03 165);
+  --color-brand-100: oklch(0.94 0.06 165);
+  --color-brand-200: oklch(0.88 0.1 165);
+  --color-brand-300: oklch(0.8 0.14 165);
+  --color-brand-400: oklch(0.71 0.16 163);
+  --color-brand-500: oklch(0.63 0.16 162);
+  --color-brand-600: oklch(0.54 0.14 162);
+  --color-brand-700: oklch(0.46 0.12 163);
+  --color-brand-800: oklch(0.38 0.09 164);
+  --color-brand-900: oklch(0.31 0.07 165);
+  --color-brand-950: oklch(0.21 0.05 166);
+
+  /* Amarelo de destaque */
+  --color-accent-300: oklch(0.9 0.15 95);
+  --color-accent-400: oklch(0.85 0.17 88);
+  --color-accent-500: oklch(0.78 0.17 75);
+
+  /* Neutros azulados (ink) */
+  --color-ink-50: oklch(0.98 0.005 250);
+  --color-ink-100: oklch(0.95 0.01 250);
+  --color-ink-200: oklch(0.9 0.015 250);
+  --color-ink-300: oklch(0.82 0.02 250);
+  --color-ink-400: oklch(0.68 0.025 250);
+  --color-ink-500: oklch(0.55 0.03 255);
+  --color-ink-600: oklch(0.45 0.03 255);
+  --color-ink-700: oklch(0.37 0.035 258);
+  --color-ink-800: oklch(0.28 0.035 260);
+  --color-ink-900: oklch(0.21 0.035 262);
+  --color-ink-950: oklch(0.15 0.03 265);
+
+  --spacing-18: 4.5rem;
+
+  --animate-shimmer: shimmer 1.6s ease-in-out infinite;
+  @keyframes shimmer {
+    100% {
+      transform: translateX(100%);
+    }
+  }
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+  }
+  body {
+    @apply bg-white font-sans text-ink-900 dark:bg-ink-950 dark:text-ink-100;
+  }
+  ::selection {
+    @apply bg-brand-200 text-brand-950;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+}
+
+@layer components {
+  .text-gradient {
+    @apply bg-gradient-to-r from-brand-600 via-brand-500 to-accent-500 bg-clip-text text-transparent dark:from-brand-300 dark:to-accent-300;
+  }
+
+  .hero-grid {
+    background-image:
+      linear-gradient(to right, color-mix(in oklch, var(--color-ink-400) 18%, transparent) 1px, transparent 1px),
+      linear-gradient(to bottom, color-mix(in oklch, var(--color-ink-400) 18%, transparent) 1px, transparent 1px);
+    background-size: 56px 56px;
+    mask-image: radial-gradient(ellipse at top, black 30%, transparent 75%);
+  }
+
+  /* Shimmer do skeleton (desligado com reduced-motion → pulso suave) */
+  .skeleton::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    transform: translateX(-100%);
+    background: linear-gradient(90deg, transparent, color-mix(in oklch, white 55%, transparent), transparent);
+    animation: var(--animate-shimmer);
+  }
+  @media (prefers-color-scheme: dark) {
+    .skeleton::after {
+      background: linear-gradient(90deg, transparent, color-mix(in oklch, white 8%, transparent), transparent);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .skeleton::after {
+      animation: none;
+    }
+    .skeleton {
+      animation: pulse 2s ease-in-out infinite;
+    }
+  }
+}

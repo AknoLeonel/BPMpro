@@ -1,0 +1,11 @@
+import { type ClassValue, clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
+
+export function cn(...inputs: ClassValue[]): string {
+  return twMerge(clsx(inputs));
+}
+
+/** Formata número no padrão pt-BR com sufixo compacto opcional (ex.: 150 mi). */
+export function formatNumber(value: number, options: Intl.NumberFormatOptions = {}): string {
+  return new Intl.NumberFormat("pt-BR", options).format(value);
+}
