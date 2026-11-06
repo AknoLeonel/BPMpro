@@ -4,10 +4,12 @@ import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import { Footer } from "@/components/layout/footer";
 import { Header } from "@/components/layout/header";
+import { WhatsAppButton } from "@/components/layout/whatsapp-button";
 import { MotionProvider } from "@/components/motion/motion-provider";
 import { ScrollProgress } from "@/components/motion/scroll-progress";
 import { BrowserObservability } from "@/components/observability";
 import { siteConfig } from "@/lib/site-config";
+import "@fontsource-variable/bricolage-grotesque";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -70,6 +72,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           <Header />
           <main id="conteudo">{children}</main>
           <Footer />
+          <WhatsAppButton />
         </MotionProvider>
         <BrowserObservability />
         <script

@@ -61,6 +61,21 @@ test.describe("Home", () => {
     expect(results.violations.map((v) => `${v.id}: ${v.nodes.map((n) => n.target.join(" ")).join(" | ")}`)).toEqual([]);
   });
 
+  test("novas seções: quem somos, parceiros e conteúdos", async ({ page }) => {
+    await page.goto("/#quem-somos");
+    await expect(page.getByRole("heading", { name: "Gente que entende de projeto e de gente" })).toBeInViewport();
+    await expect(page.getByRole("region", { name: "Segmentos atendidos", exact: true })).toBeAttached();
+    await page.locator("#conteudos").scrollIntoViewIfNeeded();
+    await expect(page.locator("#conteudos article")).toHaveCount(3);
+  });
+
+  test("botão de WhatsApp entra após rolar a página", async ({ page }) => {
+    await page.goto("/");
+    await expect(page.getByTestId("whatsapp-button")).toHaveCount(0);
+    await page.mouse.wheel(0, 1600);
+    await expect(page.getByRole("link", { name: "Conversar no WhatsApp" })).toBeVisible();
+  });
+
   test("404 tem página dedicada", async ({ page }) => {
     const response = await page.goto("/nao-existe");
     expect(response?.status()).toBe(404);
@@ -78,5 +93,14 @@ test.describe("Reduced motion", () => {
     await expect
       .poll(async () => h1.evaluate((el) => getComputedStyle(el.closest("[data-motion]") ?? el).transform))
       .toMatch(/none|matrix\(1, 0, 0, 1, 0, 0\)/);
+  });
+
+  test("faixas em movimento ficam paradas", async ({ page }) => {
+    await page.goto("/");
+    const names = await page
+      .getByTestId("marquee-track")
+      .evaluateAll((els) => els.map((el) => getComputedStyle(el).animationName));
+    expect(names.length).toBeGreaterThan(0);
+    expect(names.every((n) => n === "none")).toBe(true);
   });
 });

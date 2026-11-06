@@ -2,7 +2,7 @@ import { Mail, MapPin, Phone } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { navItems, siteConfig } from "@/lib/site-config";
 import { Logo } from "./logo";
-import { InstagramIcon, LinkedinIcon, YoutubeIcon } from "./social-icons";
+import { SocialLinks } from "./social-links";
 
 export function Footer() {
   const year = new Date().getFullYear();
@@ -12,25 +12,7 @@ export function Footer() {
         <div className="lg:col-span-2">
           <Logo />
           <p className="mt-5 max-w-md text-ink-600 leading-relaxed dark:text-ink-300">{siteConfig.description}</p>
-          <ul className="mt-6 flex gap-3" aria-label="Redes sociais">
-            {[
-              { href: siteConfig.social.instagram, label: "Instagram", Icon: InstagramIcon },
-              { href: siteConfig.social.linkedin, label: "LinkedIn", Icon: LinkedinIcon },
-              { href: siteConfig.social.youtube, label: "YouTube", Icon: YoutubeIcon },
-            ].map(({ href, label, Icon }) => (
-              <li key={label}>
-                <a
-                  href={href}
-                  aria-label={label}
-                  rel="noopener noreferrer"
-                  target="_blank"
-                  className="inline-flex size-10 items-center justify-center rounded-full bg-white text-ink-600 ring-1 ring-ink-200 transition-all duration-200 hover:-translate-y-0.5 hover:text-brand-600 hover:ring-brand-300 dark:bg-ink-900 dark:text-ink-300 dark:ring-ink-700"
-                >
-                  <Icon className="size-4" />
-                </a>
-              </li>
-            ))}
-          </ul>
+          <SocialLinks className="mt-6" />
         </div>
         <nav aria-label="Rodapé">
           <h2 className="font-semibold text-ink-950 text-sm uppercase tracking-wider dark:text-white">Navegação</h2>

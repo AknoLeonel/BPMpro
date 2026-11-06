@@ -1,7 +1,7 @@
 import { act, render, screen, within } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { MotionProvider } from "@/components/motion/motion-provider";
-import { areas, cases, journey, solutions, stats } from "@/lib/site-config";
+import { about, areas, cases, journey, partners, posts, solutions, stats } from "@/lib/site-config";
 import { MockIntersectionObserver } from "../../../tests/setup";
 import { HomePage } from "./home-page";
 
@@ -25,9 +25,11 @@ describe("HomePage (integração)", () => {
     ]) {
       expect(document.getElementById(id)).toBeInTheDocument();
     }
-    for (const item of [...solutions, ...journey, ...areas, ...cases]) {
+    for (const item of [...solutions, ...journey, ...areas, ...cases, ...about.values, ...posts]) {
       expect(screen.getAllByRole("heading", { name: item.title }).length).toBeGreaterThan(0);
     }
+    for (const name of partners) expect(screen.getAllByText(name).length).toBeGreaterThan(0);
+    expect(screen.getByTestId("values-progress")).toBeInTheDocument();
     const statsList = screen.getByRole("region", { name: "Números da BPM" });
     expect(within(statsList).getAllByRole("listitem")).toHaveLength(stats.length);
   });

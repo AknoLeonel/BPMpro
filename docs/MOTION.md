@@ -14,6 +14,12 @@ Tokens em [`src/lib/motion.ts`](../src/lib/motion.ts).
 7. **Continuidade** — skeleton tem o mesmo layout do conteúdo final; troca por crossfade (CLS ≈ 0).
 8. **Respeito** — `prefers-reduced-motion`: sem deslocamento, fade curto, sem autoplay, shimmer vira pulso.
 
+## Identidade "Brasil em movimento"
+
+- Paleta em ciclo (`src/lib/palette.ts`): verde `brand`, amarelo `accent`, azul `ocean`, coral `coral`. Use `cycleColor(i)` para alternar cores em listas — nunca hex soltos. Texto sobre amarelo é sempre escuro (AA).
+- Títulos (`h1`, `h2`, `.font-display`) em **Bricolage Grotesque**; corpo em Geist.
+- Assinatura visual: `.brand-bar` (faixa multicolor) sob os eyebrows, círculos coloridos flutuando no hero e faixa inclinada em marquee.
+
 ## Primitivos
 
 | Componente | Arquivo | Uso |
@@ -23,6 +29,8 @@ Tokens em [`src/lib/motion.ts`](../src/lib/motion.ts).
 | `Stagger` / `StaggerItem` | `components/motion/stagger.tsx` | listas e grids coreografados |
 | `LazySection` | `components/motion/lazy-section.tsx` | monta perto da viewport; skeleton → conteúdo |
 | `AnimatedCounter` | `components/motion/animated-counter.tsx` | progresso numérico |
+| `Marquee` | `components/motion/marquee.tsx` | faixa contínua 100% CSS; pausa no hover/foco; parada com reduced-motion |
+| `RotatingWord` | `components/motion/rotating-word.tsx` | palavra rotativa com largura reservada (CLS zero) e lista lida uma vez por leitores de tela |
 | `ScrollProgress` | `components/motion/scroll-progress.tsx` | progresso de leitura |
 | `Skeleton`, `SkeletonText` | `components/ui/skeleton.tsx` | placeholders com shimmer |
 | `ProgressBar` | `components/ui/progress-bar.tsx` | progresso determinado/indeterminado acessível |
