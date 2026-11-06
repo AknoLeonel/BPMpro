@@ -1,5 +1,6 @@
 import { Clock, Mail, MessageCircle } from "lucide-react";
 import dynamic from "next/dynamic";
+import { SocialLinks } from "@/components/layout/social-links";
 import { LazySection } from "@/components/motion/lazy-section";
 import { Container } from "@/components/ui/container";
 import { SectionHeading } from "@/components/ui/section-heading";
@@ -49,6 +50,8 @@ export function Contact() {
               </a>
             </li>
           </ul>
+          <p className="mt-10 font-bold font-display text-white text-xl">Acompanhe a BPM nas redes</p>
+          <SocialLinks variant="onDark" className="mt-4" />
         </div>
         <LazySection fallback={<ContactFormSkeleton />}>
           <ContactForm />

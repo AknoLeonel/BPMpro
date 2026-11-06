@@ -1,8 +1,12 @@
+import { About } from "./sections/about";
 import { Areas } from "./sections/areas";
+import { AreasMarquee } from "./sections/areas-marquee";
 import { Cases } from "./sections/cases";
 import { Contact } from "./sections/contact";
 import { Hero } from "./sections/hero";
+import { Insights } from "./sections/insights";
 import { Journey } from "./sections/journey";
+import { Partners } from "./sections/partners";
 import { FaqSection, TestimonialsSection } from "./sections/social-proof";
 import { Solutions } from "./sections/solutions";
 import { Stats } from "./sections/stats";
@@ -16,11 +20,15 @@ export function HomePage() {
     <>
       <Hero />
       <Stats />
+      <AreasMarquee />
+      <About />
       <Solutions />
       <Journey />
       <Areas />
       <Cases />
+      <Partners />
       <TestimonialsSection />
+      <Insights />
       <FaqSection />
       <Contact />
     </>

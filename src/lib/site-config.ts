@@ -21,11 +21,53 @@ export const siteConfig = {
 } as const;
 
 export const navItems = [
+  { href: "#quem-somos", label: "Quem somos" },
   { href: "#solucoes", label: "Soluções" },
   { href: "#como-funciona", label: "Como funciona" },
-  { href: "#areas", label: "Áreas" },
   { href: "#cases", label: "Cases" },
+  { href: "#conteudos", label: "Conteúdos" },
   { href: "#faq", label: "FAQ" },
+] as const;
+
+/** Palavras que se alternam no título do hero. */
+export const heroWords = ["esporte", "cultura", "educação", "assistência social", "meio ambiente"] as const;
+
+export const about = {
+  title: "Gente que entende de projeto e de gente",
+  mission:
+    "Somos uma equipe multidisciplinar — gestores, contadores, advogados, designers e tecnólogos — dedicada a fazer o recurso público e privado chegar a quem transforma comunidades, com técnica, transparência e afeto.",
+  values: [
+    {
+      title: "Propósito claro",
+      description: "Cada projeto começa pelo impacto que ele precisa gerar no território.",
+    },
+    {
+      title: "Equipe especialista",
+      description: "MROSC, leis de incentivo, emendas e compliance: conhecimento técnico de ponta a ponta.",
+    },
+    {
+      title: "Transparência radical",
+      description: "Indicadores, documentos e prazos abertos para a entidade, conselhos e financiadores.",
+    },
+    {
+      title: "Resultado mensurável",
+      description: "Metas físico-financeiras cumpridas e contas aprovadas — é assim que medimos sucesso.",
+    },
+  ],
+} as const;
+
+/** Segmentos atendidos (substitua por logos de parceiros quando autorizados). */
+export const partners = [
+  "Associações esportivas",
+  "Institutos culturais",
+  "Prefeituras e secretarias",
+  "OSCs de assistência social",
+  "Fundações empresariais",
+  "Federações e confederações",
+  "Escolas comunitárias",
+  "Coletivos culturais",
+  "Hospitais filantrópicos",
+  "Cooperativas",
 ] as const;
 
 export const stats = [
@@ -172,6 +214,33 @@ export const testimonials = [
     quote: "Equipe técnica que entende de MROSC e do dia a dia de uma ONG pequena. Fez toda a diferença.",
     author: "Coordenador de projeto social",
     location: "Pará",
+  },
+] as const;
+
+export const posts = [
+  {
+    tag: "Captação",
+    title: "Lei de Incentivo ao Esporte: o passo a passo para aprovar seu primeiro projeto",
+    excerpt: "Documentos, prazos e os erros mais comuns que travam a aprovação no Ministério do Esporte.",
+    date: "2026-10-28",
+    readingMinutes: 7,
+    image: "/illustrations/post-esporte.svg",
+  },
+  {
+    tag: "Gestão",
+    title: "MROSC na prática: como evitar glosas na prestação de contas",
+    excerpt: "Um checklist simples para manter a execução alinhada ao plano de trabalho desde o primeiro dia.",
+    date: "2026-10-14",
+    readingMinutes: 5,
+    image: "/illustrations/post-gestao.svg",
+  },
+  {
+    tag: "Cultura",
+    title: "PNAB 2026: oportunidades para coletivos e pontos de cultura",
+    excerpt: "O que muda nos editais da Política Nacional Aldir Blanc e como se preparar desde já.",
+    date: "2026-09-30",
+    readingMinutes: 6,
+    image: "/illustrations/post-cultura.svg",
   },
 ] as const;
 

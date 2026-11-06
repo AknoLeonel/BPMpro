@@ -1,7 +1,9 @@
 import { Stagger, StaggerItem } from "@/components/motion/stagger";
 import { Container } from "@/components/ui/container";
 import { SectionHeading } from "@/components/ui/section-heading";
+import { cycleColor } from "@/lib/palette";
 import { journey } from "@/lib/site-config";
+import { cn } from "@/lib/utils";
 
 export function Journey() {
   return (
@@ -23,11 +25,16 @@ export function Journey() {
         <Stagger as="ol" className="relative mt-16 grid gap-8 md:grid-cols-5">
           <div
             aria-hidden
-            className="absolute top-7 right-[10%] left-[10%] hidden h-px bg-gradient-to-r from-brand-500/0 via-brand-400/60 to-brand-500/0 md:block"
+            className="absolute top-7 right-[10%] left-[10%] hidden h-px bg-gradient-to-r from-brand-500/0 via-accent-400/60 to-brand-500/0 md:block"
           />
-          {journey.map((item) => (
+          {journey.map((item, i) => (
             <StaggerItem as="li" key={item.step} className="relative text-center">
-              <span className="relative mx-auto flex size-14 items-center justify-center rounded-full bg-brand-600 font-bold text-lg ring-8 ring-ink-950">
+              <span
+                className={cn(
+                  "relative mx-auto flex size-14 items-center justify-center rounded-full font-bold font-display text-lg ring-8 ring-ink-950",
+                  cycleColor(i).solid,
+                )}
+              >
                 {item.step}
               </span>
               <h3 className="mt-5 font-semibold text-lg">{item.title}</h3>
