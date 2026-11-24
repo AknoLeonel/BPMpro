@@ -31,7 +31,6 @@ test.describe("Home", () => {
 
   test("seções seguem a ordem do funil", async ({ page }) => {
     await page.goto("/");
-    const ids = await page.locator("main section[id]").evaluateAll((els) => els.map((el) => el.id));
     const funnel = [
       "dores",
       "quem-somos",
@@ -44,7 +43,13 @@ test.describe("Home", () => {
       "duvidas",
       "contato",
     ];
-    expect(ids.filter((id) => funnel.includes(id))).toEqual(funnel);
+    // evaluateAll não espera: em CI a leitura podia acontecer antes de o conteúdo estar no DOM.
+    await expect
+      .poll(async () => {
+        const ids = await page.locator("main section[id]").evaluateAll((els) => els.map((el) => el.id));
+        return ids.filter((id) => funnel.includes(id));
+      })
+      .toEqual(funnel);
   });
 
   test("WhatsApp com mensagem pronta nos pontos de contato", async ({ page }) => {
