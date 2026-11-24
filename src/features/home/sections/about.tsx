@@ -1,69 +1,93 @@
-"use client";
-
 import { ArrowRight } from "lucide-react";
-import { m, useScroll, useSpring } from "motion/react";
-import { useRef } from "react";
+import { BrandSymbol } from "@/components/layout/brand-symbol";
 import { Reveal } from "@/components/motion/reveal";
-import { Stagger, StaggerItem } from "@/components/motion/stagger";
-import { buttonClasses } from "@/components/ui/button";
+import { Chevrons, QuarterCircle, Stripes, Triangles } from "@/components/ui/brand-shapes";
+import { ButtonLink } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
-import { cycleColor } from "@/lib/palette";
+import { LazyImage } from "@/components/ui/lazy-image";
+import { SectionHeading } from "@/components/ui/section-heading";
+import { stagger } from "@/lib/motion";
 import { about } from "@/lib/site-config";
-import { cn } from "@/lib/utils";
 
-/** "Quem somos": missão + valores numa linha do tempo que se preenche com o scroll. */
-export function About() {
-  const timelineRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({ target: timelineRef, offset: ["start 80%", "end 50%"] });
-  const scaleY = useSpring(scrollYProgress, { stiffness: 120, damping: 30, restDelta: 0.001 });
+const EYEBROW = "Quem somos";
+const SIGNATURE = "Brasil Projetos em Movimento";
 
+/**
+ * Slot para a foto da equipe/escritório. Só use imagem com autorização de uso.
+ * Para ativar: coloque o arquivo em `public/` e troque por `{ src: "/equipe.jpg", alt: "Equipe da BPM Pro no escritório" }`.
+ * A foto ocupa o bloco azul-petróleo; o overlay brand-950/40 mantém a assinatura legível.
+ */
+const ABOUT_IMAGE: { src: string; alt: string } | null = null;
+
+/** Composição de marca no lugar da foto: bloco azul com o símbolo, listras, triângulos e quarto de círculo. */
+function AboutComposition() {
+  const lane = stagger.base;
   return (
-    <section id="quem-somos" aria-labelledby="quem-somos-title" className="scroll-mt-24 py-24 sm:py-32">
-      <Container className="grid gap-16 lg:grid-cols-2 lg:items-center">
-        <Reveal>
-          <p className="font-semibold text-brand-700 text-sm uppercase tracking-[0.18em] dark:text-brand-300">
-            Quem somos
-          </p>
-          <span aria-hidden className="brand-bar mt-3 block h-1 w-14 rounded-full" />
-          <h2
-            id="quem-somos-title"
-            className="mt-4 text-balance font-extrabold text-4xl text-ink-950 tracking-tight sm:text-5xl lg:text-6xl dark:text-white"
-          >
-            {about.title}
-          </h2>
-          <p className="mt-6 text-pretty text-ink-600 text-lg leading-relaxed dark:text-ink-300">{about.mission}</p>
-          <a href="#contato" className={buttonClasses({ size: "lg", className: "mt-9" })}>
-            Converse com a equipe
-            <ArrowRight className="size-5 transition-transform duration-200 group-hover:translate-x-1" aria-hidden />
-          </a>
+    <div className="grid aspect-square w-full grid-cols-4 grid-rows-4 overflow-hidden rounded-xl">
+      <Reveal direction="right" className="relative col-span-3 row-span-3 overflow-hidden bg-brand-500">
+        {ABOUT_IMAGE ? (
+          <>
+            <LazyImage
+              src={ABOUT_IMAGE.src}
+              alt={ABOUT_IMAGE.alt}
+              fill
+              sizes="(min-width: 1024px) 40vw, 90vw"
+              className="absolute inset-0"
+            />
+            <div aria-hidden className="absolute inset-0 bg-brand-950/40" />
+          </>
+        ) : (
+          <div aria-hidden className="absolute inset-0 flex items-center justify-center">
+            <BrandSymbol className="h-1/2 text-ink-100" />
+          </div>
+        )}
+        <p className="absolute bottom-5 left-5 font-display font-semibold text-[0.6875rem] text-white uppercase tracking-[0.16em] sm:bottom-6 sm:left-6 sm:text-xs">
+          {SIGNATURE}
+        </p>
+      </Reveal>
+      <Reveal direction="left" delay={lane} className="row-span-3 flex flex-col justify-center bg-ink-950 px-3 sm:px-5">
+        <Stripes count={6} className="w-full gap-3 sm:gap-4" />
+      </Reveal>
+      <div aria-hidden className="col-span-4 grid grid-cols-4">
+        <Reveal direction="right" delay={lane * 2} className="bg-ink-100">
+          <Triangles className="h-full w-full" />
         </Reveal>
+        <Reveal direction="right" delay={lane * 3} className="bg-ink-100">
+          <QuarterCircle className="h-full w-full -scale-x-100" />
+        </Reveal>
+        <Reveal direction="right" delay={lane * 4} className="flex items-center justify-center bg-ink-950 p-3 sm:p-4">
+          <Chevrons className="h-auto w-full" />
+        </Reveal>
+        <Reveal direction="right" delay={lane * 5} className="bg-signal-500">
+          {null}
+        </Reveal>
+      </div>
+    </div>
+  );
+}
 
-        <div ref={timelineRef} className="relative pl-10">
-          <span
-            aria-hidden
-            className="absolute top-2 bottom-2 left-[0.6875rem] w-1 rounded-full bg-ink-100 dark:bg-ink-800"
-          />
-          <m.span
-            aria-hidden
-            data-testid="values-progress"
-            className="absolute top-2 bottom-2 left-[0.6875rem] w-1 origin-top rounded-full bg-gradient-to-b from-brand-500 via-accent-400 to-coral-500"
-            style={{ scaleY }}
-          />
-          <Stagger as="ol" className="space-y-10">
-            {about.values.map((value, i) => (
-              <StaggerItem as="li" key={value.title} direction="left" className="relative">
-                <span
-                  aria-hidden
-                  className={cn(
-                    "absolute top-1 -left-10 flex size-6 items-center justify-center rounded-full ring-4 ring-white dark:ring-ink-950",
-                    cycleColor(i).solid,
-                  )}
-                />
-                <h3 className="font-bold font-display text-2xl text-ink-950 dark:text-white">{value.title}</h3>
-                <p className="mt-2 text-ink-600 leading-relaxed dark:text-ink-300">{value.description}</p>
-              </StaggerItem>
-            ))}
-          </Stagger>
+/** "Quem somos": quem é a BPM Pro e para quem ela trabalha. */
+export function About() {
+  return (
+    <section id="quem-somos" aria-labelledby="quem-somos-title" className="bg-white py-20 lg:py-28">
+      <Container className="grid items-center gap-14 lg:grid-cols-2 lg:gap-20">
+        <div>
+          <SectionHeading id="quem-somos-title" eyebrow={EYEBROW} title={about.title} align="left" />
+          <Reveal delay={stagger.base}>
+            <p className="mt-6 max-w-xl text-pretty text-ink-600 text-lg leading-relaxed">{about.text}</p>
+            <ButtonLink href={about.cta.href} variant="secondary" size="lg" className="mt-10">
+              {about.cta.label}
+              <ArrowRight
+                aria-hidden
+                strokeWidth={1.5}
+                className="size-5 transition-transform duration-200 group-hover:translate-x-1 motion-reduce:transition-none"
+              />
+            </ButtonLink>
+          </Reveal>
+        </div>
+
+        <div className="mx-auto w-full max-w-lg lg:max-w-none">
+          <AboutComposition />
         </div>
       </Container>
     </section>

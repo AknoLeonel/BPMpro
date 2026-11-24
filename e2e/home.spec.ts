@@ -1,20 +1,75 @@
 import AxeBuilder from "@axe-core/playwright";
-import { expect, test } from "@playwright/test";
+import { expect, type Page, test } from "@playwright/test";
+
+/** Rola a página inteira para montar seções lazy e concluir animações de entrada. */
+async function scrollThrough(page: Page) {
+  await page.evaluate(async () => {
+    for (let y = 0; y < document.body.scrollHeight; y += 400) {
+      window.scrollTo(0, y);
+      await new Promise((r) => setTimeout(r, 60));
+    }
+  });
+}
 
 test.describe("Home", () => {
-  test("carrega com SEO básico e hero visível", async ({ page }) => {
+  test("carrega com SEO do documento e hero visível", async ({ page }) => {
     await page.goto("/");
-    await expect(page).toHaveTitle(/BPM — Brasil Projetos em Movimento/);
-    await expect(page.getByRole("heading", { level: 1 })).toContainText("em movimento");
-    await expect(page.locator('meta[name="description"]')).toHaveAttribute("content", /terceiro setor/);
+    await expect(page).toHaveTitle("Brasil Projetos em Movimento | Captação, projetos e prestação de contas");
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText(
+      "Você cuida do esporte. A gente cuida do projeto.",
+    );
+    await expect(page.locator('meta[name="description"]')).toHaveAttribute(
+      "content",
+      /Projetos com recursos públicos de ponta a ponta/,
+    );
+    await expect(page.locator('meta[property="og:title"]')).toHaveAttribute(
+      "content",
+      "Você cuida do esporte. A gente cuida do projeto.",
+    );
     await expect(page.locator('script[type="application/ld+json"]')).toHaveCount(1);
+  });
+
+  test("seções seguem a ordem do funil", async ({ page }) => {
+    await page.goto("/");
+    const funnel = [
+      "dores",
+      "quem-somos",
+      "servicos",
+      "como-funciona",
+      "para-quem",
+      "areas",
+      "diferenciais",
+      "projetos",
+      "duvidas",
+      "contato",
+    ];
+    // evaluateAll não espera: em CI a leitura podia acontecer antes de o conteúdo estar no DOM.
+    await expect
+      .poll(async () => {
+        const ids = await page.locator("main section[id]").evaluateAll((els) => els.map((el) => el.id));
+        return ids.filter((id) => funnel.includes(id));
+      })
+      .toEqual(funnel);
+  });
+
+  test("WhatsApp com mensagem pronta nos pontos de contato", async ({ page }) => {
+    await page.goto("/");
+    for (const context of ["journey", "audience-0", "audience-3", "faq", "contact"]) {
+      const link = page.locator(`[data-whatsapp-context="${context}"]`).first();
+      await expect(link).toHaveAttribute("href", /^https:\/\/wa\.me\/\d+\?text=Ol%C3%A1/);
+      await expect(link).toHaveAttribute("target", "_blank");
+    }
+    await expect(page.locator('[data-whatsapp-context="audience-0"]')).toHaveAttribute(
+      "href",
+      /Tenho%20uma%20ideia%20de%20projeto/,
+    );
   });
 
   test("seções interativas saem do skeleton ao rolar (lazy loading)", async ({ page }) => {
     await page.goto("/");
     await expect(page.getByTestId("contact-skeleton").first()).toBeAttached();
     await page.locator("#contato").scrollIntoViewIfNeeded();
-    await expect(page.getByRole("button", { name: /solicitar diagnóstico/i })).toBeVisible();
+    await expect(page.getByRole("button", { name: "Quero meu diagnóstico gratuito" })).toBeVisible();
     await expect(page.getByTestId("contact-skeleton")).toHaveCount(0);
   });
 
@@ -22,58 +77,72 @@ test.describe("Home", () => {
     await page.goto("/");
     if (isMobile) {
       await page.getByRole("button", { name: "Abrir menu" }).click();
-      await page.getByRole("navigation", { name: "Menu móvel" }).getByRole("link", { name: "FAQ" }).click();
+      await page
+        .getByRole("navigation", { name: "Menu móvel" })
+        .getByRole("link", { name: /Dúvidas/ })
+        .click();
     } else {
-      await page.getByRole("navigation", { name: "Principal" }).getByRole("link", { name: "FAQ" }).click();
+      await page.getByRole("navigation", { name: "Principal" }).getByRole("link", { name: "Dúvidas" }).click();
     }
-    await expect(page).toHaveURL(/#faq$/);
-    await expect(page.getByRole("heading", { name: "Dúvidas comuns" })).toBeInViewport();
+    await expect(page).toHaveURL(/#duvidas$/);
+    await expect(page.getByRole("heading", { name: "Dúvidas frequentes" })).toBeInViewport();
+  });
+
+  test("dúvidas: acordeão abre uma resposta por vez", async ({ page }) => {
+    await page.goto("/#duvidas");
+    const question = page.getByRole("button", { name: "Vocês garantem a aprovação do projeto?" });
+    await question.click();
+    await expect(question).toHaveAttribute("aria-expanded", "true");
+    await expect(page.getByText("A aprovação é sempre do órgão público.", { exact: false })).toBeVisible();
   });
 
   test("formulário valida no servidor e confirma envio", async ({ page }) => {
     await page.goto("/#contato");
-    await page.locator("#contato [aria-busy]").scrollIntoViewIfNeeded();
-    const submit = page.getByRole("button", { name: /solicitar diagnóstico/i });
+    await page.locator("#contato [aria-busy]").first().scrollIntoViewIfNeeded();
+    const submit = page.getByRole("button", { name: "Quero meu diagnóstico gratuito" });
     await submit.click();
-    await expect(page.getByText("Informe seu nome completo.")).toBeVisible();
-    await expect(page.getByLabel("Nome")).toHaveAttribute("aria-invalid", "true");
+    await expect(page.getByLabel("Nome", { exact: true })).toHaveAttribute("aria-invalid", "true");
+    await expect(page.getByLabel("Nome", { exact: true })).toBeFocused();
 
-    await page.getByLabel("Nome").fill("Maria da Silva");
-    await page.getByLabel("E-mail").fill("maria@ong.org.br");
-    await page.getByLabel("Tipo de organização").selectOption("Associação / ONG");
-    await page.getByLabel("Conte sobre seu projeto").fill("Queremos captar recursos para um núcleo de esporte.");
-    await page.getByRole("button", { name: /solicitar diagnóstico/i }).click();
+    await page.getByLabel("Nome", { exact: true }).fill("Maria da Silva");
+    await page.getByLabel("Entidade", { exact: true }).fill("Associação Esporte Vivo");
+    await page.getByLabel("Cargo", { exact: true }).fill("Presidente");
+    await page.getByLabel("Cidade e UF", { exact: true }).fill("Brasília/DF");
+    await page.getByLabel("WhatsApp", { exact: true }).fill("(61) 99999-0000");
+    await page.getByLabel("E-mail", { exact: true }).fill("maria@entidade.org.br");
+    await page.getByLabel("Área", { exact: true }).selectOption("Esporte");
+    await page.getByLabel("Em que etapa você está?", { exact: true }).selectOption({ index: 1 });
+    await page.getByRole("checkbox").check();
+    await page.getByRole("button", { name: "Quero meu diagnóstico gratuito" }).click();
 
-    await expect(page.getByRole("status")).toContainText("Mensagem enviada");
+    await expect(page.getByRole("status")).toContainText("Recebemos seus dados!");
   });
 
   test("sem violações de acessibilidade WCAG A/AA", async ({ page }) => {
     await page.goto("/");
-    // Rola a página inteira para montar seções lazy e concluir animações de entrada.
-    await page.evaluate(async () => {
-      for (let y = 0; y < document.body.scrollHeight; y += 400) {
-        window.scrollTo(0, y);
-        await new Promise((r) => setTimeout(r, 60));
-      }
-    });
+    await scrollThrough(page);
     await page.waitForTimeout(1200);
-    const results = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21aa"]).analyze();
+    const results = await new AxeBuilder({ page })
+      .withTags(["wcag2a", "wcag2aa", "wcag21aa"])
+      // O mapa é um iframe de terceiro (Google Maps), fora do nosso controle.
+      .exclude("iframe")
+      .analyze();
     expect(results.violations.map((v) => `${v.id}: ${v.nodes.map((n) => n.target.join(" ")).join(" | ")}`)).toEqual([]);
   });
 
-  test("novas seções: quem somos, parceiros e conteúdos", async ({ page }) => {
-    await page.goto("/#quem-somos");
-    await expect(page.getByRole("heading", { name: "Gente que entende de projeto e de gente" })).toBeInViewport();
-    await expect(page.getByRole("region", { name: "Segmentos atendidos", exact: true })).toBeAttached();
-    await page.locator("#conteudos").scrollIntoViewIfNeeded();
-    await expect(page.locator("#conteudos article")).toHaveCount(3);
+  test("regras do documento: sem valores, depoimentos ou números ocultos", async ({ page }) => {
+    await page.goto("/");
+    await expect(page.locator("main")).not.toContainText("R$");
+    await expect(page.locator("#depoimentos")).toHaveCount(0);
+    await expect(page.getByTestId("differentials-stats")).toHaveCount(0);
   });
 
   test("botão de WhatsApp entra após rolar a página", async ({ page }) => {
     await page.goto("/");
     await expect(page.getByTestId("whatsapp-button")).toHaveCount(0);
     await page.mouse.wheel(0, 1600);
-    await expect(page.getByRole("link", { name: "Conversar no WhatsApp" })).toBeVisible();
+    await expect(page.getByTestId("whatsapp-button")).toBeVisible();
+    await expect(page.getByTestId("whatsapp-button")).toHaveAttribute("href", /Vim%20pelo%20site/);
   });
 
   test("404 tem página dedicada", async ({ page }) => {

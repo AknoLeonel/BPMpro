@@ -1,28 +1,58 @@
 import type { ReactNode } from "react";
 import { Reveal } from "@/components/motion/reveal";
 import { cn } from "@/lib/utils";
+import { RedRule } from "./brand-shapes";
+
+type Tone = "light" | "dark";
 
 interface SectionHeadingProps {
-  eyebrow: string;
   title: ReactNode;
+  eyebrow?: string;
   description?: ReactNode;
   align?: "left" | "center";
+  /** `dark` para seções com fundo preto ou azul-petróleo. */
+  tone?: Tone;
   id?: string;
+  className?: string;
 }
 
-export function SectionHeading({ eyebrow, title, description, align = "center", id }: SectionHeadingProps) {
+/** Eyebrow → traço vermelho → título (h2) → descrição, conforme docs/design-components.md. */
+export function SectionHeading({
+  eyebrow,
+  title,
+  description,
+  align = "center",
+  tone = "light",
+  id,
+  className,
+}: SectionHeadingProps) {
+  const dark = tone === "dark";
   return (
-    <Reveal className={cn("max-w-3xl", align === "center" && "mx-auto text-center")}>
-      <p className="font-semibold text-brand-700 text-sm uppercase tracking-[0.18em] dark:text-brand-300">{eyebrow}</p>
-      <span aria-hidden className={cn("brand-bar mt-3 block h-1 w-14 rounded-full", align === "center" && "mx-auto")} />
+    <Reveal className={cn("max-w-3xl", align === "center" && "mx-auto text-center", className)}>
+      {eyebrow ? (
+        <p
+          className={cn(
+            "mb-4 font-display font-semibold text-xs uppercase tracking-[0.16em]",
+            dark ? "text-brand-300" : "text-brand-700",
+          )}
+        >
+          {eyebrow}
+        </p>
+      ) : null}
+      <RedRule className={cn(align === "center" && "mx-auto")} />
       <h2
         id={id}
-        className="mt-4 text-balance font-extrabold text-3xl text-ink-950 tracking-tight sm:text-4xl lg:text-5xl dark:text-white"
+        className={cn(
+          "mt-5 text-balance font-semibold text-3xl leading-[1.1] tracking-[-0.01em] sm:text-4xl lg:text-5xl",
+          dark ? "text-white" : "text-ink-950",
+        )}
       >
         {title}
       </h2>
       {description ? (
-        <p className="mt-5 text-pretty text-ink-600 text-lg leading-relaxed dark:text-ink-300">{description}</p>
+        <p className={cn("mt-5 text-pretty text-lg leading-relaxed", dark ? "text-white" : "text-ink-600")}>
+          {description}
+        </p>
       ) : null}
     </Reveal>
   );

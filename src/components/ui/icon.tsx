@@ -1,37 +1,60 @@
 import {
-  BookOpen,
-  FileText,
-  GraduationCap,
+  BadgeCheck,
+  ChartGantt,
+  ClipboardCheck,
+  ClipboardList,
+  Drama,
+  Eye,
+  FilePenLine,
+  FileStack,
+  FileWarning,
+  FileX2,
+  Gavel,
   HandCoins,
+  Handshake,
   HeartHandshake,
-  LayoutDashboard,
-  Leaf,
+  Landmark,
+  Lightbulb,
   type LucideProps,
-  Palette,
-  ShieldCheck,
-  Stethoscope,
+  Map as MapIcon,
+  Medal,
+  MonitorCog,
+  Stamp,
+  TriangleAlert,
   Trophy,
-  Workflow,
+  Waypoints,
 } from "lucide-react";
 
 const icons = {
-  BookOpen,
-  FileText,
-  GraduationCap,
+  BadgeCheck,
+  ChartGantt,
+  ClipboardCheck,
+  ClipboardList,
+  Drama,
+  Eye,
+  FilePenLine,
+  FileStack,
+  FileWarning,
+  FileX2,
+  Gavel,
   HandCoins,
+  Handshake,
   HeartHandshake,
-  LayoutDashboard,
-  Leaf,
-  Palette,
-  ShieldCheck,
-  Stethoscope,
+  Landmark,
+  Lightbulb,
+  Map: MapIcon,
+  Medal,
+  MonitorCog,
+  Stamp,
+  TriangleAlert,
   Trophy,
-  Workflow,
+  Waypoints,
 } as const;
 
 export type IconName = keyof typeof icons;
 
-export function Icon({ name, ...props }: { name: IconName } & LucideProps) {
+/** Ícones de traço fino (1.5px), no estilo do Manual de Marca. */
+export function Icon({ name, strokeWidth = 1.5, ...props }: { name: IconName } & LucideProps) {
   const Component = icons[name];
-  return <Component aria-hidden {...props} />;
+  return <Component aria-hidden strokeWidth={strokeWidth} {...props} />;
 }

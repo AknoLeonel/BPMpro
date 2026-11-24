@@ -1,273 +1,367 @@
 /**
- * Conteúdo do site modelo. Números, cases e depoimentos são ILUSTRATIVOS —
- * substitua pelos dados reais da BPM antes de publicar.
+ * Conteúdo do site — documento "Site bpmpro.com.br: esqueleto e conteúdo".
+ *
+ * Regras do documento:
+ * - textos provisórios até a aprovação da marca;
+ * - não exibir valores, nomes de parlamentares ou partidos;
+ * - nunca prometer aprovação;
+ * - números, depoimentos e CNPJ ficam ocultos até a liberação (ver `visibility`);
+ * - fotos de entidades só com autorização.
+ *
+ * Contatos (telefone, WhatsApp, endereço) são provisórios — substitua pelos dados reais.
  */
 export const siteConfig = {
-  name: "BPM",
-  fullName: "BPM — Brasil Projetos em Movimento",
-  tagline: "Tiramos projetos do papel e colocamos o Brasil em movimento.",
+  name: "BPM Pro",
+  shortName: "BPM",
+  fullName: "Brasil Projetos em Movimento",
+  tagline: "Você cuida do esporte. A gente cuida do projeto.",
+  summary: "Projetos com recursos públicos de ponta a ponta. Esporte, cultura e turismo.",
   description:
-    "Consultoria e tecnologia para o terceiro setor: elaboração de projetos, captação de recursos públicos e privados, gestão da execução e prestação de contas sem dor de cabeça.",
+    "Projetos com recursos públicos de ponta a ponta para entidades esportivas, culturais e sociais: captação, elaboração, execução, eventos, licitações e prestação de contas.",
+  seoTitle: "Brasil Projetos em Movimento | Captação, projetos e prestação de contas",
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "https://bpmpro.com.br",
+  domain: "bpmpro.com.br",
   email: "contato@bpmpro.com.br",
   phone: "+55 61 0000-0000",
   whatsapp: "5561000000000",
   address: "Brasília — DF",
+  mapsUrl: "https://www.google.com/maps/search/?api=1&query=Bras%C3%ADlia%20DF",
+  mapEmbedUrl: "https://www.google.com/maps?q=Bras%C3%ADlia%20DF&output=embed",
+  /** Oculto até a regularização (ver `visibility.cnpj`). */
+  cnpj: "",
   social: {
     instagram: "https://instagram.com/bpmpro",
     linkedin: "https://linkedin.com/company/bpmpro",
-    youtube: "https://youtube.com/@bpmpro",
   },
 } as const;
 
+/** Blocos que só aparecem após a liberação da gestão. */
+export const visibility = {
+  stats: false,
+  testimonials: false,
+  cnpj: false,
+} as const;
+
+/** Mensagens prontas do WhatsApp por ponto de contato. */
+export const whatsappMessages = {
+  default: "Olá! Vim pelo site e quero saber como a BPM Pro pode ajudar a minha entidade.",
+  journey: "Olá! Quero começar pelo diagnóstico gratuito da minha entidade.",
+  faq: "Olá! Tenho uma dúvida sobre projetos com recursos públicos.",
+} as const;
+
 export const navItems = [
-  { href: "#quem-somos", label: "Quem somos" },
-  { href: "#solucoes", label: "Soluções" },
+  { href: "#servicos", label: "Serviços" },
   { href: "#como-funciona", label: "Como funciona" },
-  { href: "#cases", label: "Cases" },
-  { href: "#conteudos", label: "Conteúdos" },
-  { href: "#faq", label: "FAQ" },
+  { href: "#para-quem", label: "Para quem" },
+  { href: "#projetos", label: "Projetos" },
+  { href: "#duvidas", label: "Dúvidas" },
+  { href: "#contato", label: "Contato" },
 ] as const;
 
-/** Palavras que se alternam no título do hero. */
-export const heroWords = ["esporte", "cultura", "educação", "assistência social", "meio ambiente"] as const;
+export const hero = {
+  eyebrow: "Projetos com recursos públicos de ponta a ponta",
+  title: "Você cuida do esporte. A gente cuida do projeto.",
+  subtitle:
+    "Captamos recursos, escrevemos, executamos e prestamos contas dos projetos da sua entidade. Do edital ao último comprovante, com um único parceiro.",
+  primaryCta: { label: "Quero um diagnóstico gratuito", href: "#contato" },
+  secondaryCta: { label: "Ver como funciona", href: "#como-funciona" },
+  seals: ["Esporte, cultura e turismo", "Federal, estadual e distrital", "Do edital à prestação de contas"],
+} as const;
+
+export const pains = {
+  title: "O recurso existe. O que trava é o caminho.",
+  items: [
+    {
+      icon: "FileWarning",
+      title: "Documentos irregulares",
+      description: "Certidão vencida ou estatuto desatualizado bloqueiam a entidade antes mesmo de começar.",
+    },
+    {
+      icon: "FileX2",
+      title: "Projeto devolvido",
+      description: "Proposta mal estruturada volta para ajustes e o prazo se perde.",
+    },
+    {
+      icon: "TriangleAlert",
+      title: "Execução sem controle",
+      description: "Cotações, contratações e compras fora das regras viram problema lá na frente.",
+    },
+    {
+      icon: "FileStack",
+      title: "Prestação de contas pesada",
+      description: "Comprovantes soltos e relatórios incompletos geram pendências e travam novos projetos.",
+    },
+  ],
+  closing: "A Brasil Projetos em Movimento existe para tirar esse peso das costas da sua entidade.",
+} as const;
 
 export const about = {
-  title: "Gente que entende de projeto e de gente",
-  mission:
-    "Somos uma equipe multidisciplinar — gestores, contadores, advogados, designers e tecnólogos — dedicada a fazer o recurso público e privado chegar a quem transforma comunidades, com técnica, transparência e afeto.",
-  values: [
+  title: "Um único parceiro, do edital ao último comprovante.",
+  text: "A Brasil Projetos em Movimento elabora e acompanha projetos com recursos públicos para associações, ligas, federações, clubes e institutos. Nosso foco é o esporte, com atuação também em cultura, turismo e projetos sociais. Cuidamos de cada etapa para que a sua entidade se concentre no que faz de melhor: colocar gente em movimento.",
+  cta: { label: "Conheça nossos serviços", href: "#servicos" },
+} as const;
+
+export const services = {
+  title: "Tudo o que o seu projeto precisa",
+  subtitle: "Do primeiro documento ao relatório final.",
+  groups: [
     {
-      title: "Propósito claro",
-      description: "Cada projeto começa pelo impacto que ele precisa gerar no território.",
+      label: "Antes",
+      items: [
+        {
+          icon: "Stamp",
+          title: "Regularização estatutária",
+          description:
+            "Estatuto, documentos, certidões e certificações em dia para a entidade estar apta a receber recursos.",
+        },
+        {
+          icon: "HandCoins",
+          title: "Captação de recursos",
+          description: "Identificamos a fonte certa: emendas parlamentares, editais, fundos e leis de incentivo.",
+        },
+        {
+          icon: "FilePenLine",
+          title: "Elaboração de projetos",
+          description:
+            "Proposta, projeto técnico, plano de trabalho e planilha de custos dentro das regras de cada órgão.",
+        },
+      ],
     },
     {
-      title: "Equipe especialista",
-      description: "MROSC, leis de incentivo, emendas e compliance: conhecimento técnico de ponta a ponta.",
+      label: "Durante",
+      items: [
+        {
+          icon: "ChartGantt",
+          title: "Execução de projetos",
+          description: "Gestão do projeto aprovado, com cronograma, metas e controle de cada etapa.",
+        },
+        {
+          icon: "Trophy",
+          title: "Produção de eventos",
+          description: "Campeonatos, festivais, circuitos e eventos esportivos e culturais do papel ao apito final.",
+        },
+        {
+          icon: "Handshake",
+          title: "Contratação de empresas",
+          description: "Cotações, seleção e contratação de fornecedores com toda a documentação.",
+        },
+        {
+          icon: "Gavel",
+          title: "Licitações e compras",
+          description: "Processos de compra conduzidos conforme as regras do recurso recebido.",
+        },
+      ],
     },
     {
-      title: "Transparência radical",
-      description: "Indicadores, documentos e prazos abertos para a entidade, conselhos e financiadores.",
-    },
-    {
-      title: "Resultado mensurável",
-      description: "Metas físico-financeiras cumpridas e contas aprovadas — é assim que medimos sucesso.",
+      label: "Sempre",
+      items: [
+        {
+          icon: "ClipboardCheck",
+          title: "Prestação de contas",
+          description: "Relatórios, comprovação e acompanhamento até a conclusão do processo.",
+        },
+        {
+          icon: "Landmark",
+          title: "Relações institucionais",
+          description: "Articulação técnica com órgãos públicos e gestores para viabilizar os projetos.",
+        },
+      ],
     },
   ],
 } as const;
 
-/** Segmentos atendidos (substitua por logos de parceiros quando autorizados). */
-export const partners = [
-  "Associações esportivas",
-  "Institutos culturais",
-  "Prefeituras e secretarias",
-  "OSCs de assistência social",
-  "Fundações empresariais",
-  "Federações e confederações",
-  "Escolas comunitárias",
-  "Coletivos culturais",
-  "Hospitais filantrópicos",
-  "Cooperativas",
-] as const;
+export const journey = {
+  title: "Como o seu projeto sai do papel",
+  steps: [
+    { title: "Diagnóstico", description: "Entendemos a entidade, o projeto e o momento em que vocês estão." },
+    { title: "Regularização", description: "Organizamos estatuto, documentos e certidões." },
+    { title: "Captação", description: "Encontramos a fonte de recurso mais adequada." },
+    { title: "Projeto", description: "Escrevemos proposta, plano de trabalho e custos." },
+    {
+      title: "Aprovação",
+      description: "Acompanhamos a análise e respondemos às complementações até a formalização.",
+    },
+    { title: "Execução", description: "Cuidamos de contratações, compras e da realização do projeto." },
+    { title: "Prestação de contas", description: "Comprovamos tudo e acompanhamos até a conclusão." },
+  ],
+  cta: "Começar pelo diagnóstico gratuito",
+} as const;
 
-export const stats = [
-  { value: 320, suffix: "+", label: "projetos executados" },
-  { value: 22, suffix: "", label: "estados atendidos" },
-  { value: 180, suffix: "+", label: "entidades parceiras" },
-  { value: 210, prefix: "R$ ", suffix: " mi", label: "em recursos geridos" },
-] as const;
+export const audiences = {
+  title: "Em que momento está a sua entidade?",
+  items: [
+    {
+      icon: "Lightbulb",
+      title: "Tenho uma ideia de projeto",
+      description: "Vamos ver se a entidade está pronta e qual recurso combina com a sua ideia.",
+      message: "Olá! Tenho uma ideia de projeto e quero saber por onde começar.",
+    },
+    {
+      icon: "Landmark",
+      title: "Tenho um recurso indicado",
+      description: "Prazo correndo? Elaboramos e cadastramos o projeto com prioridade.",
+      message: "Olá! Tenho um recurso indicado e preciso cadastrar o projeto.",
+    },
+    {
+      icon: "BadgeCheck",
+      title: "Tenho um projeto aprovado",
+      description: "Cuidamos da execução, das contratações, das compras e do evento.",
+      message: "Olá! Tenho um projeto aprovado e preciso de apoio na execução.",
+    },
+    {
+      icon: "ClipboardList",
+      title: "Preciso prestar contas",
+      description: "Organizamos os comprovantes e o relatório para regularizar a sua entidade.",
+      message: "Olá! Preciso de ajuda com uma prestação de contas.",
+    },
+  ],
+} as const;
 
-export const solutions = [
-  {
-    icon: "FileText",
-    title: "Elaboração de projetos",
-    description:
-      "Diagnóstico, plano de trabalho, metas e orçamento redigidos com a linguagem que cada edital e lei de incentivo exige.",
-  },
-  {
-    icon: "HandCoins",
-    title: "Captação de recursos",
-    description:
-      "Emendas parlamentares, leis de incentivo ao esporte e à cultura, editais, convênios e investimento social privado.",
-  },
-  {
-    icon: "Workflow",
-    title: "Gestão da execução",
-    description:
-      "Cronogramas, compras, contratações e acompanhamento físico-financeiro para cumprir cada meta pactuada.",
-  },
-  {
-    icon: "ShieldCheck",
-    title: "Prestação de contas",
-    description:
-      "Documentação organizada desde o primeiro dia e relatórios no padrão dos órgãos concedentes e de controle.",
-  },
-  {
-    icon: "LayoutDashboard",
-    title: "Plataforma BPMpro",
-    description:
-      "Painel online com status, documentos, indicadores e alertas de prazos de todos os seus projetos em um só lugar.",
-  },
-  {
-    icon: "GraduationCap",
-    title: "Capacitação",
-    description:
-      "Formação de equipes e dirigentes em MROSC, compliance e boas práticas de governança para o terceiro setor.",
-  },
-] as const;
+export const areas = {
+  title: "Onde colocamos projetos em movimento",
+  items: [
+    { icon: "Trophy", title: "Esporte" },
+    { icon: "Drama", title: "Cultura" },
+    { icon: "Map", title: "Turismo" },
+    { icon: "HeartHandshake", title: "Projetos sociais" },
+  ],
+  spheres: "Federal, estadual e distrital",
+  modalities: [
+    "Futsal",
+    "Futebol",
+    "Society",
+    "Futevôlei",
+    "Taekwondo",
+    "Jiu-jitsu",
+    "Artes marciais",
+    "Capoeira",
+    "Skate",
+    "Atletismo",
+    "Basquete",
+    "Automobilismo",
+    "Games nas escolas",
+    "Festivais culturais",
+  ],
+} as const;
 
-export const journey = [
-  {
-    step: "01",
-    title: "Diagnóstico",
-    description: "Entendemos sua entidade, regularidade jurídica e a ideia que você quer realizar.",
-  },
-  {
-    step: "02",
-    title: "Projeto",
-    description: "Transformamos a ideia em um projeto técnico, viável e alinhado à fonte de recurso certa.",
-  },
-  {
-    step: "03",
-    title: "Captação",
-    description: "Submetemos, acompanhamos e articulamos até o recurso estar disponível.",
-  },
-  {
-    step: "04",
-    title: "Execução",
-    description: "Gerimos o dia a dia com transparência e indicadores em tempo real.",
-  },
-  {
-    step: "05",
-    title: "Prestação de contas",
-    description: "Entregamos contas aprovadas e um histórico que abre portas para o próximo projeto.",
-  },
-] as const;
+export const differentials = {
+  title: "Por que a Brasil Projetos em Movimento",
+  items: [
+    {
+      icon: "Waypoints",
+      title: "Ponta a ponta",
+      description: "Um único parceiro em todas as etapas, sem empurra-empurra entre fornecedores.",
+    },
+    {
+      icon: "Medal",
+      title: "Especialistas em esporte",
+      description: "Experiência em dezenas de modalidades, do futsal ao automobilismo.",
+    },
+    {
+      icon: "Eye",
+      title: "Processo transparente",
+      description: "Você sabe em que etapa está o seu projeto e o que vem depois.",
+    },
+    {
+      icon: "MonitorCog",
+      title: "Tecnologia nos processos",
+      description: "Controle de prazos, documentos e relatórios com ferramentas digitais.",
+    },
+  ],
+  /** Oculto até a aprovação da gestão (`visibility.stats`). Preencha os valores reais antes de liberar. */
+  stats: [
+    { value: 0, prefix: "+ de ", suffix: "", label: "projetos aprovados" },
+    { value: 0, prefix: "+ de ", suffix: "", label: "entidades atendidas" },
+    { value: 0, prefix: "", suffix: "", label: "anos de experiência" },
+  ],
+} as const;
 
-export const areas = [
-  {
-    icon: "Trophy",
-    title: "Esporte",
-    description: "Lei de Incentivo ao Esporte, escolinhas, eventos e infraestrutura.",
-  },
-  {
-    icon: "Palette",
-    title: "Cultura",
-    description: "Lei Rouanet, Paulo Gustavo, Aldir Blanc, festivais e patrimônio.",
-  },
-  {
-    icon: "HeartHandshake",
-    title: "Assistência social",
-    description: "Convivência, segurança alimentar e fortalecimento de vínculos.",
-  },
-  { icon: "BookOpen", title: "Educação", description: "Reforço escolar, inclusão digital e formação profissional." },
-  {
-    icon: "Stethoscope",
-    title: "Saúde",
-    description: "Prevenção, equipamentos e atendimento em entidades filantrópicas.",
-  },
-  {
-    icon: "Leaf",
-    title: "Meio ambiente",
-    description: "Recuperação de áreas, educação ambiental e economia circular.",
-  },
-] as const;
+export interface Project {
+  name: string;
+  modality: string;
+  city: string;
+  /** Foto publicada somente com autorização da entidade. */
+  image: string;
+}
 
-export const cases = [
-  {
-    tag: "Esporte",
-    title: "Núcleo de vôlei para 600 jovens",
-    location: "Goiânia — GO",
-    result: "R$ 1,8 mi captados via Lei de Incentivo ao Esporte",
-    image: "/illustrations/case-esporte.svg",
-  },
-  {
-    tag: "Cultura",
-    title: "Festival de música popular itinerante",
-    location: "Recife — PE",
-    result: "12 cidades, 40 mil pessoas e contas aprovadas sem ressalvas",
-    image: "/illustrations/case-cultura.svg",
-  },
-  {
-    tag: "Social",
-    title: "Cozinha comunitária e capacitação",
-    location: "Belém — PA",
-    result: "Emenda parlamentar executada 100% dentro do prazo",
-    image: "/illustrations/case-social.svg",
-  },
-] as const;
+export const projects: {
+  title: string;
+  subtitle: string;
+  note: string;
+  items: readonly Project[];
+} = {
+  title: "Projetos que já saíram do papel",
+  subtitle: "Campeonatos, festivais e projetos sociais executados de ponta a ponta.",
+  note: "Publicamos cada projeto somente com autorização da entidade. Novos projetos entram aqui em breve.",
+  items: [],
+};
 
-export const testimonials = [
-  {
-    quote:
-      "Saímos de zero projetos aprovados para três em um ano. A prestação de contas, que era nosso pesadelo, virou rotina.",
-    author: "Presidente de associação esportiva",
-    location: "Goiás",
-  },
-  {
-    quote:
-      "O painel da BPMpro mostra tudo o que precisamos para conversar com patrocinadores e conselho. Transparência que gera confiança.",
-    author: "Diretora de instituto cultural",
-    location: "Pernambuco",
-  },
-  {
-    quote: "Equipe técnica que entende de MROSC e do dia a dia de uma ONG pequena. Fez toda a diferença.",
-    author: "Coordenador de projeto social",
-    location: "Pará",
-  },
-] as const;
+export interface Testimonial {
+  quote: string;
+  name: string;
+  role: string;
+  organization: string;
+  photo?: string;
+}
 
-export const posts = [
-  {
-    tag: "Captação",
-    title: "Lei de Incentivo ao Esporte: o passo a passo para aprovar seu primeiro projeto",
-    excerpt: "Documentos, prazos e os erros mais comuns que travam a aprovação no Ministério do Esporte.",
-    date: "2026-10-28",
-    readingMinutes: 7,
-    image: "/illustrations/post-esporte.svg",
-  },
-  {
-    tag: "Gestão",
-    title: "MROSC na prática: como evitar glosas na prestação de contas",
-    excerpt: "Um checklist simples para manter a execução alinhada ao plano de trabalho desde o primeiro dia.",
-    date: "2026-10-14",
-    readingMinutes: 5,
-    image: "/illustrations/post-gestao.svg",
-  },
-  {
-    tag: "Cultura",
-    title: "PNAB 2026: oportunidades para coletivos e pontos de cultura",
-    excerpt: "O que muda nos editais da Política Nacional Aldir Blanc e como se preparar desde já.",
-    date: "2026-09-30",
-    readingMinutes: 6,
-    image: "/illustrations/post-cultura.svg",
-  },
-] as const;
+/** Oculto até termos depoimentos autorizados (`visibility.testimonials`). */
+export const testimonials: { title: string; items: readonly Testimonial[] } = {
+  title: "Quem trabalha com a gente recomenda",
+  items: [],
+};
 
-export const faq = [
-  {
-    question: "Minha entidade precisa ter quantos anos para captar recursos?",
-    answer:
-      "Depende da fonte. Algumas leis de incentivo exigem um ano de existência; termos de fomento pelo MROSC costumam pedir de um a três. No diagnóstico avaliamos a elegibilidade e indicamos o melhor caminho.",
-  },
-  {
-    question: "Vocês trabalham com prefeituras e órgãos públicos?",
-    answer:
-      "Sim. Apoiamos secretarias na estruturação de programas, chamamentos públicos e no acompanhamento de parcerias com organizações da sociedade civil.",
-  },
-  {
-    question: "Como é cobrado o serviço?",
-    answer:
-      "Oferecemos modelos por projeto, mensalidade de gestão ou combinados. Tudo é definido em proposta transparente após o diagnóstico gratuito.",
-  },
-  {
-    question: "E se o projeto não for aprovado?",
-    answer:
-      "Analisamos o parecer, ajustamos o projeto e buscamos novas oportunidades de edital. Nosso acompanhamento continua até o recurso chegar.",
-  },
-  {
-    question: "Consigo acompanhar o andamento online?",
-    answer:
-      "Sim. A plataforma BPMpro reúne cronograma, documentos, indicadores e alertas de prazo, acessível de qualquer dispositivo.",
-  },
-] as const;
+export const faq = {
+  title: "Dúvidas frequentes",
+  items: [
+    {
+      question: "Minha entidade pode receber recursos públicos?",
+      answer:
+        "Em geral, entidades sem fins lucrativos regularmente constituídas, como associações, ligas, federações, clubes e institutos, podem receber recursos, desde que estejam com documentação em dia. Os requisitos variam conforme a fonte. No diagnóstico verificamos a situação da sua entidade.",
+    },
+    {
+      question: "O que é uma emenda parlamentar?",
+      answer:
+        "É uma indicação feita por parlamentares no orçamento público para destinar recursos a uma finalidade, como um projeto esportivo ou cultural. Depois da indicação, o projeto precisa ser cadastrado, analisado e aprovado pelo órgão responsável.",
+    },
+    {
+      question: "Quanto tempo leva da proposta à liberação do recurso?",
+      answer:
+        "Depende da fonte e do órgão. Há etapas de cadastro, análise, ajustes e formalização. No diagnóstico apresentamos o caminho e os prazos esperados para o seu caso.",
+    },
+    {
+      question: "Vocês garantem a aprovação do projeto?",
+      answer:
+        "Não. A aprovação é sempre do órgão público. O nosso trabalho é deixar a entidade e o projeto o mais preparados possível, dentro de todas as regras.",
+    },
+    {
+      question: "Vocês fazem só o projeto ou também a execução?",
+      answer:
+        "Fazemos as duas coisas e também a prestação de contas. Você pode contratar o ciclo completo ou apenas as etapas que precisar.",
+    },
+    {
+      question: "Atendem fora do Distrito Federal?",
+      answer: "Sim. Atendemos entidades de todo o Brasil, com reuniões online e apoio presencial quando necessário.",
+    },
+  ],
+  cta: "Ainda tem dúvidas? Fale com a gente",
+} as const;
+
+export const contact = {
+  title: "Vamos colocar o seu projeto em movimento?",
+  subtitle: "Conte em que momento está a sua entidade. Respondemos pelo WhatsApp.",
+  submit: "Quero meu diagnóstico gratuito",
+  success: "Recebemos seus dados! Nossa equipe vai falar com você pelo WhatsApp em breve.",
+  consent: "Autorizo o contato da Brasil Projetos em Movimento e concordo com a Política de Privacidade.",
+} as const;
+
+export const footer = {
+  signature: "Resultado comprovado, do edital à prestação de contas.",
+  links: [
+    { href: "/#servicos", label: "Serviços" },
+    { href: "/#como-funciona", label: "Como funciona" },
+    { href: "/#projetos", label: "Projetos" },
+    { href: "/#duvidas", label: "Dúvidas" },
+    { href: "/#contato", label: "Contato" },
+    { href: "/privacidade", label: "Política de Privacidade" },
+  ],
+} as const;

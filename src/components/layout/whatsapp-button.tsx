@@ -1,52 +1,56 @@
 "use client";
 
-import { AnimatePresence, m, useMotionValueEvent, useScroll } from "motion/react";
-import { useState } from "react";
-import { duration, easing, exitDuration } from "@/lib/motion";
-import { siteConfig } from "@/lib/site-config";
+import { AnimatePresence, m, useReducedMotion } from "motion/react";
+import { useScrolledPast } from "@/components/motion/use-scrolled-past";
+import { distance, duration, easing, exitDuration } from "@/lib/motion";
+import { whatsappMessages } from "@/lib/site-config";
+import { whatsappUrl } from "@/lib/whatsapp";
+import { WhatsAppIcon } from "./social-icons";
 
-function WhatsAppIcon() {
-  return (
-    <svg viewBox="0 0 24 24" className="size-7" fill="currentColor" aria-hidden>
-      <path d="M12 2a10 10 0 0 0-8.66 15l-1.3 4.74 4.86-1.27A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.18-1.15l-.3-.18-2.88.75.77-2.8-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.14c-.25-.12-1.46-.72-1.69-.8-.23-.08-.39-.12-.55.12-.17.25-.64.8-.78.97-.14.16-.29.18-.53.06a6.7 6.7 0 0 1-3.34-2.92c-.25-.43.25-.4.72-1.34.08-.16.04-.3-.02-.42l-.75-1.82c-.2-.48-.4-.41-.55-.42h-.47a.9.9 0 0 0-.66.31 2.77 2.77 0 0 0-.86 2.06c0 1.21.88 2.38 1 2.55.13.16 1.74 2.66 4.22 3.73 1.57.68 2.18.74 2.97.62.48-.07 1.46-.6 1.67-1.18.2-.58.2-1.08.14-1.18-.06-.1-.22-.16-.47-.28Z" />
-    </svg>
-  );
-}
+/** Rolagem (px) a partir da qual o botão aparece — logo depois do hero. */
+const SHOW_AFTER = 480;
 
 /** CTA flutuante de WhatsApp: entra após o hero e some no topo da página. */
 export function WhatsAppButton() {
-  const [visible, setVisible] = useState(false);
-  const { scrollY } = useScroll();
-  useMotionValueEvent(scrollY, "change", (y) => setVisible(y > 480));
+  const reduced = useReducedMotion() ?? false;
+  const visible = useScrolledPast(SHOW_AFTER);
 
   return (
     <AnimatePresence>
       {visible ? (
-        <m.a
-          href={`https://wa.me/${siteConfig.whatsapp}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Conversar no WhatsApp"
-          data-testid="whatsapp-button"
-          className="group fixed right-4 bottom-4 z-50 flex items-center gap-3 rounded-full bg-[#1f9d55] p-3 text-white shadow-[#1f9d55]/30 shadow-xl sm:right-6 sm:bottom-6"
-          initial={{ opacity: 0, scale: 0.6, y: 24 }}
-          animate={{ opacity: 1, scale: 1, y: 0, transition: { type: "spring", stiffness: 320, damping: 22 } }}
+        <m.div
+          className="fixed right-6 bottom-[calc(1.5rem+env(safe-area-inset-bottom))] z-40"
+          initial={{ opacity: 0, y: reduced ? 0 : distance.lg, scale: reduced ? 1 : 0.85 }}
+          animate={{
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            transition: reduced ? { duration: duration.micro } : { type: "spring", stiffness: 320, damping: 24 },
+          }}
           exit={{
             opacity: 0,
-            scale: 0.8,
-            y: 16,
+            y: reduced ? 0 : distance.md,
             transition: { duration: exitDuration(duration.small), ease: easing.exit },
           }}
-          whileHover={{ scale: 1.06 }}
-          whileTap={{ scale: 0.94 }}
         >
+          <a
+            href={whatsappUrl(whatsappMessages.default)}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Conversar no WhatsApp (abre em nova aba)"
+            data-testid="whatsapp-button"
+            data-whatsapp-context="floating"
+            className="group peer flex size-14 items-center justify-center rounded-full bg-ink-950 text-whatsapp shadow-elevation-3 ring-1 ring-white/10 transition-transform duration-200 ease-out hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:ring-offset-2 active:scale-95 motion-reduce:transition-none motion-reduce:active:scale-100 motion-reduce:hover:translate-y-0"
+          >
+            <WhatsAppIcon className="size-7" />
+          </a>
           <span
             aria-hidden
-            className="absolute inset-0 -z-10 animate-ping rounded-full bg-[#1f9d55] opacity-30 [animation-duration:2.4s] motion-reduce:animate-none"
-          />
-          <WhatsAppIcon />
-          <span className="hidden pr-2 font-semibold text-sm sm:group-hover:inline">Fale conosco</span>
-        </m.a>
+            className="pointer-events-none absolute top-1/2 right-full mr-3 hidden translate-x-1 -translate-y-1/2 whitespace-nowrap rounded-full bg-ink-950 px-4 py-2 font-semibold text-sm text-white opacity-0 shadow-elevation-2 transition-[opacity,transform] duration-200 ease-out peer-hover:translate-x-0 peer-hover:opacity-100 peer-focus-visible:translate-x-0 peer-focus-visible:opacity-100 motion-reduce:transition-none md:block"
+          >
+            Fale no WhatsApp
+          </span>
+        </m.div>
       ) : null}
     </AnimatePresence>
   );
