@@ -1,5 +1,3 @@
-import { GeistMono } from "geist/font/mono";
-import { GeistSans } from "geist/font/sans";
 import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import { Footer } from "@/components/layout/footer";
@@ -9,41 +7,39 @@ import { MotionProvider } from "@/components/motion/motion-provider";
 import { ScrollProgress } from "@/components/motion/scroll-progress";
 import { BrowserObservability } from "@/components/observability";
 import { siteConfig } from "@/lib/site-config";
-import "@fontsource-variable/bricolage-grotesque";
+import "@fontsource-variable/archivo/wdth.css";
+import "@fontsource-variable/montserrat";
 import "./globals.css";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
-  title: { default: `${siteConfig.fullName} | Captação e gestão de projetos`, template: `%s | ${siteConfig.name}` },
+  title: { default: siteConfig.seoTitle, template: `%s | ${siteConfig.fullName}` },
   description: siteConfig.description,
   keywords: [
+    "projetos com recursos públicos",
     "captação de recursos",
-    "projetos sociais",
-    "lei de incentivo ao esporte",
-    "lei rouanet",
     "emendas parlamentares",
+    "projetos esportivos",
+    "elaboração de projetos",
+    "execução de projetos",
+    "licitações",
     "prestação de contas",
-    "MROSC",
-    "terceiro setor",
   ],
   openGraph: {
     type: "website",
     locale: "pt_BR",
     url: siteConfig.url,
     siteName: siteConfig.fullName,
-    title: siteConfig.fullName,
-    description: siteConfig.tagline,
+    title: siteConfig.tagline,
+    description: siteConfig.domain,
   },
-  twitter: { card: "summary_large_image", title: siteConfig.fullName, description: siteConfig.tagline },
+  twitter: { card: "summary_large_image", title: siteConfig.tagline, description: siteConfig.description },
   alternates: { canonical: "/" },
   robots: { index: true, follow: true },
 };
 
 export const viewport: Viewport = {
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-    { media: "(prefers-color-scheme: dark)", color: "#0b1020" },
-  ],
+  themeColor: "#111111",
 };
 
 const jsonLd = {
@@ -53,17 +49,18 @@ const jsonLd = {
   url: siteConfig.url,
   email: siteConfig.email,
   description: siteConfig.description,
+  alternateName: siteConfig.name,
   areaServed: "BR",
   sameAs: Object.values(siteConfig.social),
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="pt-BR" className={`${GeistSans.variable} ${GeistMono.variable}`}>
+    <html lang="pt-BR">
       <body>
         <a
           href="#conteudo"
-          className="sr-only z-[70] rounded-full bg-brand-600 px-4 py-2 text-white focus:not-sr-only focus:fixed focus:top-4 focus:left-4"
+          className="sr-only z-[70] rounded-full bg-brand-500 px-4 py-2 font-semibold text-white focus:not-sr-only focus:fixed focus:top-4 focus:left-4"
         >
           Pular para o conteúdo
         </a>

@@ -13,10 +13,10 @@ export function Skeleton({ className, shape = "block" }: SkeletonProps) {
       aria-hidden
       data-testid="skeleton"
       className={cn(
-        "skeleton relative overflow-hidden bg-ink-100 dark:bg-ink-800",
+        "skeleton relative overflow-hidden bg-ink-100",
         shape === "text" && "h-4 rounded-md",
         shape === "circle" && "rounded-full",
-        shape === "block" && "rounded-2xl",
+        shape === "block" && "rounded-md",
         className,
       )}
     />

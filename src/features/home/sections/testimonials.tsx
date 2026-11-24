@@ -1,47 +1,80 @@
 "use client";
 
-import { ChevronLeft, ChevronRight, Quote } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { AnimatePresence, m, useReducedMotion } from "motion/react";
-import { useCallback, useEffect, useState } from "react";
-import { duration, easing, exitDuration } from "@/lib/motion";
-import { testimonials } from "@/lib/site-config";
+import Image from "next/image";
+import { type KeyboardEvent, useCallback, useId, useState } from "react";
+import { QuarterCircle } from "@/components/ui/brand-shapes";
+import { distance, duration, easing, exitDuration } from "@/lib/motion";
+import { type Testimonial, testimonials } from "@/lib/site-config";
 import { cn } from "@/lib/utils";
 
-const AUTOPLAY_MS = 7000;
+const controlClasses =
+  "inline-flex size-11 items-center justify-center rounded-full border-2 border-ink-950 text-ink-950 " +
+  "transition-colors duration-200 hover:bg-ink-950 hover:text-white focus-visible:outline-none " +
+  "focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:ring-offset-2 focus-visible:ring-offset-white " +
+  "motion-reduce:transition-none";
 
-export function Testimonials() {
+function initials(name: string) {
+  return name
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase() ?? "")
+    .join("");
+}
+
+const pad = (n: number) => String(n).padStart(2, "0");
+
+interface TestimonialsProps {
+  /** Depoimentos exibidos; por padrão os autorizados em `site-config`. */
+  items?: readonly Testimonial[];
+}
+
+/** Carrossel de depoimentos sem autoplay (setas e teclado ←/→). */
+export function Testimonials({ items = testimonials.items }: TestimonialsProps) {
   const [[index, dir], setState] = useState<[number, 1 | -1]>([0, 1]);
-  const [paused, setPaused] = useState(false);
   const reduced = useReducedMotion();
-  const total = testimonials.length;
-  const current = testimonials[index] ?? testimonials[0];
+  const baseId = useId();
+  const total = items.length;
 
-  const go = useCallback((step: 1 | -1) => setState(([i]) => [(i + step + total) % total, step]), []);
+  const go = useCallback((step: 1 | -1) => setState(([i]) => [(i + step + total) % total, step]), [total]);
 
-  useEffect(() => {
-    if (paused || reduced) return;
-    const id = window.setTimeout(() => go(1), AUTOPLAY_MS);
-    return () => window.clearTimeout(id);
-  }, [go, paused, reduced]);
+  const current = items[index] ?? items[0];
+  if (!current) return null;
 
-  const offset = reduced ? 0 : 40;
+  const offset = reduced ? 0 : distance.lg;
+  const multiple = total > 1;
+
+  const onKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+    if (!multiple) return;
+    if (event.key === "ArrowRight") {
+      event.preventDefault();
+      go(1);
+    } else if (event.key === "ArrowLeft") {
+      event.preventDefault();
+      go(-1);
+    }
+  };
 
   return (
     <section
       aria-roledescription="carrossel"
       aria-label="Depoimentos"
-      className="mx-auto max-w-4xl text-center"
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
-      onFocusCapture={() => setPaused(true)}
-      onBlurCapture={() => setPaused(false)}
+      className="relative overflow-hidden rounded-lg bg-white p-6 shadow-elevation-1 sm:p-10"
+      onKeyDown={onKeyDown}
     >
-      <Quote className="mx-auto size-10 text-brand-500" aria-hidden />
-      <div className="relative mt-8 min-h-56 sm:min-h-44" aria-live="polite">
+      <QuarterCircle className="pointer-events-none absolute -top-px -right-px size-16 -scale-x-100 sm:size-20" />
+      <span aria-hidden className="block font-display font-semibold text-6xl text-brand-500 leading-none">
+        “
+      </span>
+      <div className="relative mt-2 min-h-56 sm:min-h-48" aria-live="polite" id={`${baseId}-slides`}>
         <AnimatePresence mode="wait" custom={dir} initial={false}>
           <m.figure
             key={index}
-            custom={dir}
+            role="group"
+            aria-roledescription="slide"
+            aria-label={`${index + 1} de ${total}`}
             initial={{ opacity: 0, x: dir * offset }}
             animate={{ opacity: 1, x: 0, transition: { duration: duration.medium, ease: easing.enter } }}
             exit={{
@@ -50,61 +83,64 @@ export function Testimonials() {
               transition: { duration: exitDuration(duration.medium), ease: easing.exit },
             }}
           >
-            <blockquote className="text-balance font-medium text-2xl text-ink-900 leading-snug sm:text-3xl dark:text-white">
-              “{current?.quote}”
+            <blockquote className="line-clamp-3 text-pretty font-display font-medium text-ink-950 text-xl leading-snug">
+              {current.quote}
             </blockquote>
-            <figcaption className="mt-6 text-ink-600 dark:text-ink-300">
-              <span className="font-semibold text-ink-900 dark:text-white">{current?.author}</span> ·{" "}
-              {current?.location}
+            <figcaption className="mt-8 flex items-center gap-4">
+              {current.photo ? (
+                <Image
+                  src={current.photo}
+                  alt=""
+                  width={48}
+                  height={48}
+                  loading="lazy"
+                  className="size-12 shrink-0 rounded-full object-cover"
+                />
+              ) : (
+                <span
+                  aria-hidden
+                  className="inline-flex size-12 shrink-0 items-center justify-center rounded-full bg-brand-500 font-display font-semibold text-sm text-white"
+                >
+                  {initials(current.name)}
+                </span>
+              )}
+              <span className="min-w-0">
+                <span className="block font-semibold text-ink-950">{current.name}</span>
+                <span className="block text-ink-600 text-sm">
+                  {current.role} · {current.organization}
+                </span>
+              </span>
             </figcaption>
           </m.figure>
         </AnimatePresence>
       </div>
-      <div className="mt-10 flex items-center justify-center gap-4">
-        <button
-          type="button"
-          onClick={() => go(-1)}
-          aria-label="Depoimento anterior"
-          className="inline-flex size-11 items-center justify-center rounded-full ring-1 ring-ink-200 transition-colors hover:bg-ink-100 dark:ring-ink-700 dark:hover:bg-ink-800"
-        >
-          <ChevronLeft className="size-5" aria-hidden />
-        </button>
-        <div className="flex gap-2">
-          {testimonials.map((t, i) => (
+      {multiple ? (
+        <div className="mt-8 flex items-center justify-between gap-4 border-ink-200 border-t pt-6">
+          <p aria-hidden className="font-display font-semibold text-ink-600 text-sm tabular-nums tracking-[0.16em]">
+            <span className="text-ink-950">{pad(index + 1)}</span> / {pad(total)}
+          </p>
+          <div className="flex gap-3">
             <button
               type="button"
-              key={t.author}
-              onClick={() => setState([i, i > index ? 1 : -1])}
-              aria-label={`Ir para depoimento ${i + 1}`}
-              aria-current={i === index}
-              className={cn(
-                "relative h-2 overflow-hidden rounded-full bg-ink-200 transition-[width] duration-300 dark:bg-ink-700",
-                i === index ? "w-10" : "w-2",
-              )}
+              onClick={() => go(-1)}
+              aria-label="Depoimento anterior"
+              aria-controls={`${baseId}-slides`}
+              className={cn(controlClasses)}
             >
-              {i === index && !paused && !reduced ? (
-                <m.span
-                  key={`p-${index}`}
-                  className="absolute inset-y-0 left-0 bg-brand-500"
-                  initial={{ width: 0 }}
-                  animate={{ width: "100%" }}
-                  transition={{ duration: AUTOPLAY_MS / 1000, ease: "linear" }}
-                />
-              ) : i === index ? (
-                <span className="absolute inset-0 bg-brand-500" />
-              ) : null}
+              <ChevronLeft className="size-5" strokeWidth={1.5} aria-hidden />
             </button>
-          ))}
+            <button
+              type="button"
+              onClick={() => go(1)}
+              aria-label="Próximo depoimento"
+              aria-controls={`${baseId}-slides`}
+              className={cn(controlClasses)}
+            >
+              <ChevronRight className="size-5" strokeWidth={1.5} aria-hidden />
+            </button>
+          </div>
         </div>
-        <button
-          type="button"
-          onClick={() => go(1)}
-          aria-label="Próximo depoimento"
-          className="inline-flex size-11 items-center justify-center rounded-full ring-1 ring-ink-200 transition-colors hover:bg-ink-100 dark:ring-ink-700 dark:hover:bg-ink-800"
-        >
-          <ChevronRight className="size-5" aria-hidden />
-        </button>
-      </div>
+      ) : null}
     </section>
   );
 }

@@ -1,56 +1,90 @@
-import { Mail, MapPin, Phone } from "lucide-react";
+import { Mail, MapPin } from "lucide-react";
+import Link from "next/link";
+import { BrandBand } from "@/components/ui/brand-shapes";
 import { Container } from "@/components/ui/container";
-import { navItems, siteConfig } from "@/lib/site-config";
+import { WhatsAppLink } from "@/components/ui/whatsapp-link";
+import { footer, siteConfig, visibility, whatsappMessages } from "@/lib/site-config";
+import { cn } from "@/lib/utils";
 import { Logo } from "./logo";
+import { WhatsAppIcon } from "./social-icons";
 import { SocialLinks } from "./social-links";
+
+const linkClasses =
+  "rounded-sm text-ink-400 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-950";
+
+const headingClasses = "font-sans font-semibold text-ink-100 text-xs uppercase tracking-[0.18em]";
 
 export function Footer() {
   const year = new Date().getFullYear();
+  const showCnpj = visibility.cnpj && siteConfig.cnpj.length > 0;
+
   return (
-    <footer className="border-ink-100 border-t bg-ink-50/60 dark:border-ink-800 dark:bg-ink-950">
-      <Container className="grid gap-12 py-16 md:grid-cols-2 lg:grid-cols-4">
-        <div className="lg:col-span-2">
-          <Logo />
-          <p className="mt-5 max-w-md text-ink-600 leading-relaxed dark:text-ink-300">{siteConfig.description}</p>
-          <SocialLinks className="mt-6" />
+    <footer className="bg-ink-950 text-ink-400">
+      <BrandBand />
+      <Container className="grid gap-12 py-16 md:grid-cols-2 lg:grid-cols-12 lg:gap-8 lg:py-20">
+        <div className="md:col-span-2 lg:col-span-6">
+          <Logo tone="light" />
+          <p className="mt-8 max-w-md font-display text-2xl text-white leading-snug sm:text-[1.75rem]">
+            {footer.signature}
+          </p>
+          <SocialLinks variant="onDark" className="mt-8" />
         </div>
-        <nav aria-label="Rodapé">
-          <h2 className="font-semibold text-ink-950 text-sm uppercase tracking-wider dark:text-white">Navegação</h2>
-          <ul className="mt-4 space-y-3">
-            {navItems.map((item) => (
+
+        <nav aria-label="Rodapé" className="lg:col-span-3">
+          <h2 className={headingClasses}>Navegação</h2>
+          <ul className="mt-5 space-y-1">
+            {footer.links.map((item) => (
               <li key={item.href}>
-                <a href={item.href} className="text-ink-600 transition-colors hover:text-brand-600 dark:text-ink-300">
+                <Link href={item.href} className={cn(linkClasses, "inline-flex min-h-11 items-center")}>
                   {item.label}
-                </a>
+                </Link>
               </li>
             ))}
           </ul>
         </nav>
-        <div>
-          <h2 className="font-semibold text-ink-950 text-sm uppercase tracking-wider dark:text-white">Contato</h2>
-          <ul className="mt-4 space-y-3 text-ink-600 dark:text-ink-300">
-            <li className="flex items-center gap-2">
-              <Mail className="size-4 text-brand-600" aria-hidden />
-              <a href={`mailto:${siteConfig.email}`} className="hover:text-brand-600">
+
+        <div className="lg:col-span-3">
+          <h2 className={headingClasses}>Contato</h2>
+          <ul className="mt-5 space-y-1">
+            <li>
+              <a
+                href={`mailto:${siteConfig.email}`}
+                className={cn(linkClasses, "inline-flex min-h-11 items-center gap-3")}
+              >
+                <Mail aria-hidden className="size-5 shrink-0 text-brand-400" strokeWidth={1.5} />
                 {siteConfig.email}
               </a>
             </li>
-            <li className="flex items-center gap-2">
-              <Phone className="size-4 text-brand-600" aria-hidden />
-              {siteConfig.phone}
+            <li>
+              <WhatsAppLink
+                unstyled
+                context="footer"
+                message={whatsappMessages.default}
+                className={cn(linkClasses, "inline-flex min-h-11 items-center gap-3")}
+              >
+                <WhatsAppIcon className="size-5 shrink-0 text-whatsapp" />
+                WhatsApp
+              </WhatsAppLink>
             </li>
-            <li className="flex items-center gap-2">
-              <MapPin className="size-4 text-brand-600" aria-hidden />
+            <li className="flex min-h-11 items-center gap-3">
+              <MapPin aria-hidden className="size-5 shrink-0 text-brand-400" strokeWidth={1.5} />
               {siteConfig.address}
             </li>
           </ul>
         </div>
       </Container>
-      <Container className="flex flex-col gap-2 border-ink-100 border-t py-6 text-ink-500 text-sm sm:flex-row sm:justify-between dark:border-ink-800">
-        <p>
-          © {year} {siteConfig.fullName}. Todos os direitos reservados.
-        </p>
-        <p>Feito com propósito no Brasil.</p>
+
+      <Container>
+        <div className="flex flex-col gap-3 border-ink-800 border-t py-8 text-sm sm:flex-row sm:items-center sm:justify-between">
+          <p>
+            © {year} {siteConfig.fullName}
+            {showCnpj ? <span data-testid="footer-cnpj"> · CNPJ {siteConfig.cnpj}</span> : null}
+          </p>
+          <p className="flex items-center gap-3">
+            <span aria-hidden className="block h-0.5 w-6 bg-signal-500" />
+            {siteConfig.domain}
+          </p>
+        </div>
       </Container>
     </footer>
   );

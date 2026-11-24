@@ -1,72 +1,70 @@
 @import "tailwindcss";
 
+/*
+ * Tokens do Manual de Marca BPM — ver docs/design.md.
+ * Âncoras oficiais: brand-500 #187b91 · ink-950 #111111 · ink-100 #ececec · signal-500 #f33836.
+ */
 @theme {
-  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
-  --font-display: "Bricolage Grotesque Variable", var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  /* Montserrat — tipografia complementar (texto, controles). */
+  --font-sans: "Montserrat Variable", ui-sans-serif, system-ui, sans-serif;
+  /*
+   * New Science — tipografia principal (títulos). Fonte comercial: enquanto o arquivo licenciado
+   * não estiver no projeto, usamos Archivo em largura expandida (OFL) como substituta.
+   */
+  --font-display: "New Science", "Archivo Variable", ui-sans-serif, system-ui, sans-serif;
 
-  /* Verde BPM — movimento, confiança, Brasil */
-  --color-brand-50: oklch(0.97 0.03 165);
-  --color-brand-100: oklch(0.94 0.06 165);
-  --color-brand-200: oklch(0.88 0.1 165);
-  --color-brand-300: oklch(0.8 0.14 165);
-  --color-brand-400: oklch(0.71 0.16 163);
-  --color-brand-500: oklch(0.63 0.16 162);
-  --color-brand-600: oklch(0.54 0.14 162);
-  --color-brand-700: oklch(0.46 0.12 163);
-  --color-brand-800: oklch(0.38 0.09 164);
-  --color-brand-900: oklch(0.31 0.07 165);
-  --color-brand-950: oklch(0.21 0.05 166);
+  /* Azul-petróleo — cor de marca */
+  --color-brand-50: #e8f4f7;
+  --color-brand-100: #cfe7ee;
+  --color-brand-200: #a3d2de;
+  --color-brand-300: #6fb8ca;
+  --color-brand-400: #3aa0b6;
+  --color-brand-500: #187b91;
+  --color-brand-600: #146c80;
+  --color-brand-700: #145f70;
+  --color-brand-800: #134d5a;
+  --color-brand-900: #103e49;
+  --color-brand-950: #0a2830;
 
-  /* Amarelo de destaque */
-  --color-accent-300: oklch(0.9 0.15 95);
-  --color-accent-400: oklch(0.85 0.17 88);
-  --color-accent-500: oklch(0.78 0.17 75);
+  /* Vermelho — sinal/destaque (texto pequeno só em 700 sobre claro) */
+  --color-signal-300: #ff8a88;
+  --color-signal-400: #ff6b69;
+  --color-signal-500: #f33836;
+  --color-signal-600: #de2a28;
+  --color-signal-700: #c8201f;
+  --color-signal-800: #a01a19;
 
-  /* Azul Brasil */
-  --color-ocean-300: oklch(0.8 0.1 245);
-  --color-ocean-400: oklch(0.68 0.15 250);
-  --color-ocean-500: oklch(0.57 0.18 255);
-  --color-ocean-600: oklch(0.48 0.18 258);
-  --color-ocean-700: oklch(0.4 0.16 260);
+  /* Neutros — preto e cinza-claro da marca */
+  --color-ink-50: #f6f6f6;
+  --color-ink-100: #ececec;
+  --color-ink-200: #dcdcdc;
+  --color-ink-300: #c4c4c4;
+  --color-ink-400: #a3a3a3;
+  --color-ink-500: #7a7a7a;
+  --color-ink-600: #5c5c5c;
+  --color-ink-700: #3d3d3d;
+  --color-ink-800: #262626;
+  --color-ink-900: #1a1a1a;
+  --color-ink-950: #111111;
 
-  /* Coral — energia e calor humano */
-  --color-coral-300: oklch(0.82 0.1 25);
-  --color-coral-400: oklch(0.72 0.16 25);
-  --color-coral-500: oklch(0.64 0.2 22);
-  --color-coral-600: oklch(0.55 0.2 22);
-  --color-coral-700: oklch(0.47 0.18 22);
+  --color-whatsapp: #25d366;
 
-  /* Neutros azulados (ink) */
-  --color-ink-50: oklch(0.98 0.005 250);
-  --color-ink-100: oklch(0.95 0.01 250);
-  --color-ink-200: oklch(0.9 0.015 250);
-  --color-ink-300: oklch(0.82 0.02 250);
-  --color-ink-400: oklch(0.68 0.025 250);
-  --color-ink-500: oklch(0.55 0.03 255);
-  --color-ink-600: oklch(0.45 0.03 255);
-  --color-ink-700: oklch(0.37 0.035 258);
-  --color-ink-800: oklch(0.28 0.035 260);
-  --color-ink-900: oklch(0.21 0.035 262);
-  --color-ink-950: oklch(0.15 0.03 265);
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 24px;
+  --radius-xl: 40px;
+
+  --shadow-elevation-1: 0 1px 2px rgb(17 17 17 / 0.06), 0 1px 3px rgb(17 17 17 / 0.08);
+  --shadow-elevation-2: 0 12px 28px -12px rgb(17 17 17 / 0.22);
+  --shadow-elevation-3: 0 24px 48px -16px rgb(17 17 17 / 0.32);
 
   --spacing-18: 4.5rem;
 
   --animate-shimmer: shimmer 1.6s ease-in-out infinite;
   --animate-marquee: marquee var(--marquee-duration, 40s) linear infinite;
-  --animate-float: float 9s ease-in-out infinite;
   @keyframes marquee {
     to {
       transform: translateX(-50%);
-    }
-  }
-  @keyframes float {
-    0%,
-    100% {
-      transform: translate3d(0, 0, 0);
-    }
-    50% {
-      transform: translate3d(0, -14px, 0);
     }
   }
   @keyframes shimmer {
@@ -82,16 +80,21 @@
     -webkit-font-smoothing: antialiased;
   }
   body {
-    @apply bg-white font-sans text-ink-900 dark:bg-ink-950 dark:text-ink-100;
+    @apply bg-white font-sans text-ink-950;
   }
   h1,
   h2,
+  h3,
   .font-display {
     font-family: var(--font-display);
-    font-optical-sizing: auto;
+    /* Largura expandida da substituta (Archivo) — aproxima o desenho largo da New Science. */
+    font-variation-settings: "wdth" 125;
+  }
+  [id] {
+    scroll-margin-top: 5.5rem;
   }
   ::selection {
-    @apply bg-brand-200 text-brand-950;
+    @apply bg-brand-200 text-ink-950;
   }
   @media (prefers-reduced-motion: reduce) {
     html {
@@ -101,29 +104,6 @@
 }
 
 @layer components {
-  .text-gradient {
-    @apply bg-gradient-to-r from-brand-600 via-brand-500 to-accent-500 bg-clip-text text-transparent dark:from-brand-300 dark:to-accent-300;
-  }
-
-  /* Faixa multicolor — assinatura visual "Brasil em movimento" */
-  .brand-bar {
-    background-image: linear-gradient(
-      90deg,
-      var(--color-brand-500),
-      var(--color-accent-400),
-      var(--color-ocean-500),
-      var(--color-coral-500)
-    );
-  }
-
-  .hero-grid {
-    background-image:
-      linear-gradient(to right, color-mix(in oklch, var(--color-ink-400) 18%, transparent) 1px, transparent 1px),
-      linear-gradient(to bottom, color-mix(in oklch, var(--color-ink-400) 18%, transparent) 1px, transparent 1px);
-    background-size: 56px 56px;
-    mask-image: radial-gradient(ellipse at top, black 30%, transparent 75%);
-  }
-
   /* Shimmer do skeleton (desligado com reduced-motion → pulso suave) */
   .skeleton::after {
     content: "";
@@ -132,11 +112,6 @@
     transform: translateX(-100%);
     background: linear-gradient(90deg, transparent, color-mix(in oklch, white 55%, transparent), transparent);
     animation: var(--animate-shimmer);
-  }
-  @media (prefers-color-scheme: dark) {
-    .skeleton::after {
-      background: linear-gradient(90deg, transparent, color-mix(in oklch, white 8%, transparent), transparent);
-    }
   }
   @media (prefers-reduced-motion: reduce) {
     .skeleton::after {

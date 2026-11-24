@@ -1,34 +1,36 @@
 import { About } from "./sections/about";
 import { Areas } from "./sections/areas";
-import { AreasMarquee } from "./sections/areas-marquee";
-import { Cases } from "./sections/cases";
+import { Audiences } from "./sections/audiences";
 import { Contact } from "./sections/contact";
+import { Differentials } from "./sections/differentials";
 import { Hero } from "./sections/hero";
-import { Insights } from "./sections/insights";
 import { Journey } from "./sections/journey";
-import { Partners } from "./sections/partners";
+import { Pains } from "./sections/pains";
+import { Projects } from "./sections/projects";
+import { Services } from "./sections/services";
 import { FaqSection, TestimonialsSection } from "./sections/social-proof";
-import { Solutions } from "./sections/solutions";
-import { Stats } from "./sections/stats";
 
 /**
- * Conteúdo institucional é renderizado no servidor (SEO) e revelado com motion;
- * blocos interativos (depoimentos, FAQ, formulário) são lazy + skeleton.
+ * Landing page na ordem do funil de vendas (documento "esqueleto e conteúdo"):
+ * topo prende a atenção e mostra a dor, meio explica e qualifica, fundo prova e converte.
+ * Cabeçalho, rodapé e botão flutuante vêm do layout raiz.
  */
 export function HomePage() {
   return (
     <>
+      {/* Topo */}
       <Hero />
-      <Stats />
-      <AreasMarquee />
+      <Pains />
       <About />
-      <Solutions />
+      {/* Meio */}
+      <Services />
       <Journey />
+      <Audiences />
       <Areas />
-      <Cases />
-      <Partners />
+      <Differentials />
+      {/* Fundo */}
+      <Projects />
       <TestimonialsSection />
-      <Insights />
       <FaqSection />
       <Contact />
     </>

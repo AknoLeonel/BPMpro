@@ -3,50 +3,64 @@ import { Skeleton, SkeletonText } from "@/components/ui/skeleton";
 /** Skeletons com as mesmas dimensões das seções finais (CLS ≈ 0). */
 export function TestimonialsSkeleton() {
   return (
-    <div className="mx-auto max-w-4xl" data-testid="testimonials-skeleton">
-      <Skeleton shape="circle" className="mx-auto size-10" />
-      <div className="mt-8 min-h-56 space-y-3 sm:min-h-44">
-        <Skeleton shape="text" className="mx-auto h-7 w-11/12" />
-        <Skeleton shape="text" className="mx-auto h-7 w-4/5" />
-        <Skeleton shape="text" className="mx-auto mt-6 w-48" />
+    <div className="rounded-lg bg-white p-6 shadow-elevation-1 sm:p-10" data-testid="testimonials-skeleton">
+      <Skeleton className="h-12 w-8" />
+      <div className="mt-2 min-h-56 space-y-3 sm:min-h-48">
+        <Skeleton shape="text" className="h-6 w-11/12" />
+        <Skeleton shape="text" className="h-6 w-4/5" />
+        <Skeleton shape="text" className="h-6 w-2/3" />
+        <div className="mt-8 flex items-center gap-4">
+          <Skeleton shape="circle" className="size-12" />
+          <div className="space-y-2">
+            <Skeleton shape="text" className="w-32" />
+            <Skeleton shape="text" className="w-48" />
+          </div>
+        </div>
       </div>
-      <Skeleton className="mx-auto mt-10 h-11 w-56 rounded-full" />
+      <div className="mt-8 flex items-center justify-between border-ink-200 border-t pt-6">
+        <Skeleton shape="text" className="w-16" />
+        <div className="flex gap-3">
+          <Skeleton shape="circle" className="size-11" />
+          <Skeleton shape="circle" className="size-11" />
+        </div>
+      </div>
     </div>
   );
 }
 
 export function FaqSkeleton() {
   return (
-    <div
-      className="space-y-px rounded-3xl bg-white px-6 ring-1 ring-ink-100 sm:px-8 dark:bg-ink-900 dark:ring-ink-800"
-      data-testid="faq-skeleton"
-    >
-      {Array.from({ length: 5 }, (_, i) => (
-        <div key={i} className="flex items-center justify-between gap-6 py-6">
+    <div className="border-ink-200 border-t" data-testid="faq-skeleton">
+      {Array.from({ length: 6 }, (_, i) => (
+        <div key={i} className="flex items-center justify-between gap-6 border-ink-200 border-b py-6">
           <Skeleton shape="text" className="h-5 w-3/4" />
-          <Skeleton shape="circle" className="size-8" />
+          <Skeleton shape="circle" className="size-9" />
         </div>
       ))}
     </div>
   );
 }
 
+/** O painel branco fica na seção; o skeleton desenha só o miolo do formulário. */
 export function ContactFormSkeleton() {
   return (
-    <div
-      className="space-y-5 rounded-3xl bg-white p-6 shadow-2xl sm:p-8 dark:bg-ink-900"
-      data-testid="contact-skeleton"
-    >
+    <div className="space-y-5" data-testid="contact-skeleton">
       <div className="grid gap-5 sm:grid-cols-2">
-        {Array.from({ length: 4 }, (_, i) => (
+        {Array.from({ length: 8 }, (_, i) => (
           <div key={i} className="space-y-2">
-            <Skeleton shape="text" className="w-24" />
-            <Skeleton className="h-12 rounded-xl" />
+            <Skeleton shape="text" className="h-3.5 w-24" />
+            <Skeleton className="h-12 rounded-sm" />
           </div>
         ))}
       </div>
-      <SkeletonText lines={1} className="w-28" />
-      <Skeleton className="h-32 rounded-xl" />
+      <div className="space-y-2">
+        <Skeleton shape="text" className="h-3.5 w-20" />
+        <Skeleton className="h-28 rounded-sm" />
+      </div>
+      <div className="flex gap-3">
+        <Skeleton className="size-5 shrink-0 rounded-[4px]" />
+        <SkeletonText lines={2} className="flex-1" />
+      </div>
       <Skeleton className="h-14 rounded-full" />
     </div>
   );
