@@ -1,9 +1,10 @@
 "use client";
 
 import { Menu, X } from "lucide-react";
-import { AnimatePresence, m, useMotionValueEvent, useReducedMotion, useScroll } from "motion/react";
+import { AnimatePresence, m, useReducedMotion } from "motion/react";
 import { usePathname } from "next/navigation";
 import { type KeyboardEvent as ReactKeyboardEvent, useCallback, useEffect, useRef, useState } from "react";
+import { useScrolledPast } from "@/components/motion/use-scrolled-past";
 import { Container } from "@/components/ui/container";
 import { WhatsAppLink } from "@/components/ui/whatsapp-link";
 import { distance, duration, easing, exitDuration, stagger } from "@/lib/motion";
@@ -61,12 +62,10 @@ export function Header() {
   const pathname = usePathname();
   const isHome = pathname === "/" || pathname === null;
   const [open, setOpen] = useState(false);
-  const [scrolledPast, setScrolledPast] = useState(false);
   const reduced = useReducedMotion() ?? false;
   const toggleRef = useRef<HTMLButtonElement>(null);
   const headerRef = useRef<HTMLElement>(null);
-  const { scrollY } = useScroll();
-  useMotionValueEvent(scrollY, "change", (y) => setScrolledPast(y > SOLID_AFTER));
+  const scrolledPast = useScrolledPast(SOLID_AFTER);
 
   const activeId = useActiveSection(sectionIds, isHome);
   /** Fora da home não há hero escuro: o cabeçalho já começa sólido. */

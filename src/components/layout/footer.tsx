@@ -5,6 +5,7 @@ import { Container } from "@/components/ui/container";
 import { WhatsAppLink } from "@/components/ui/whatsapp-link";
 import { footer, siteConfig, visibility, whatsappMessages } from "@/lib/site-config";
 import { cn } from "@/lib/utils";
+import { CurrentYear } from "./current-year";
 import { Logo } from "./logo";
 import { WhatsAppIcon } from "./social-icons";
 import { SocialLinks } from "./social-links";
@@ -15,7 +16,6 @@ const linkClasses =
 const headingClasses = "font-sans font-semibold text-ink-100 text-xs uppercase tracking-[0.18em]";
 
 export function Footer() {
-  const year = new Date().getFullYear();
   const showCnpj = visibility.cnpj && siteConfig.cnpj.length > 0;
 
   return (
@@ -77,7 +77,7 @@ export function Footer() {
       <Container>
         <div className="flex flex-col gap-3 border-ink-800 border-t py-8 text-sm sm:flex-row sm:items-center sm:justify-between">
           <p>
-            © {year} {siteConfig.fullName}
+            © <CurrentYear /> {siteConfig.fullName}
             {showCnpj ? <span data-testid="footer-cnpj"> · CNPJ {siteConfig.cnpj}</span> : null}
           </p>
           <p className="flex items-center gap-3">

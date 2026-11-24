@@ -31,7 +31,7 @@ export function Contact() {
     <section
       id="contato"
       aria-labelledby="contato-title"
-      className="relative scroll-mt-24 overflow-hidden bg-brand-500 py-24 sm:py-32"
+      className="relative overflow-hidden bg-brand-500 py-20 lg:py-28"
     >
       <BrandSymbol className="pointer-events-none absolute -top-10 -right-16 h-80 text-brand-600 sm:h-[28rem] lg:-right-10" />
       <Container className="relative">

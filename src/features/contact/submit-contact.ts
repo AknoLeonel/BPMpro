@@ -14,14 +14,11 @@ export const deliveryErrorMessage =
  * LGPD: os logs nunca carregam dados pessoais — apenas área e etapa.
  */
 export async function submitContact(raw: Record<string, unknown>, deliver: ContactDelivery): Promise<ContactState> {
+  // Devolvidos em todo erro: o React 19 reinicia o formulário após a action.
+  const values = Object.fromEntries(Object.entries(raw).map(([k, v]) => [k, typeof v === "string" ? v : ""]));
   const parsed = parseContact(raw);
   if (!parsed.ok) {
-    return {
-      status: "error",
-      message: invalidFieldsMessage,
-      fieldErrors: parsed.fieldErrors,
-      values: Object.fromEntries(Object.entries(raw).map(([k, v]) => [k, typeof v === "string" ? v : ""])),
-    };
+    return { status: "error", message: invalidFieldsMessage, fieldErrors: parsed.fieldErrors, values };
   }
   if (parsed.data.website) {
     // Bot detectado: responde sucesso sem entregar.
@@ -34,6 +31,6 @@ export async function submitContact(raw: Record<string, unknown>, deliver: Conta
     return { status: "success", message: contact.success };
   } catch (error) {
     logger.error("contact.delivery_failed", { error: error instanceof Error ? error.message : String(error) });
-    return { status: "error", message: deliveryErrorMessage };
+    return { status: "error", message: deliveryErrorMessage, values };
   }
 }

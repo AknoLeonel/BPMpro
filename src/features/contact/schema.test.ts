@@ -26,6 +26,11 @@ describe("parseContact", () => {
     }
   });
 
+  it("aceita e-mail com espaços nas pontas (autocompletar do celular)", () => {
+    const result = parseContact({ ...valid, email: " maria@ong.org.br " });
+    expect(result.ok && result.data.email).toBe("maria@ong.org.br");
+  });
+
   it("mensagem é opcional, mas limitada a 2000 caracteres", () => {
     const { message: _omit, ...withoutMessage } = valid;
     expect(parseContact(withoutMessage).ok).toBe(true);

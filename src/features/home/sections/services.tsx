@@ -18,7 +18,7 @@ export function Services() {
     <section
       id="servicos"
       aria-labelledby="servicos-title"
-      className="relative scroll-mt-22 overflow-hidden bg-ink-100 py-20 lg:py-28"
+      className="relative overflow-hidden bg-ink-100 py-20 lg:py-28"
     >
       <QuarterCircle className="absolute top-0 right-0 hidden size-40 -scale-x-100 lg:block" />
       <Container className="relative">

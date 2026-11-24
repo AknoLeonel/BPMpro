@@ -69,7 +69,7 @@ function AboutComposition() {
 /** "Quem somos": quem é a BPM Pro e para quem ela trabalha. */
 export function About() {
   return (
-    <section id="quem-somos" aria-labelledby="quem-somos-title" className="scroll-mt-[88px] bg-white py-20 lg:py-28">
+    <section id="quem-somos" aria-labelledby="quem-somos-title" className="bg-white py-20 lg:py-28">
       <Container className="grid items-center gap-14 lg:grid-cols-2 lg:gap-20">
         <div>
           <SectionHeading id="quem-somos-title" eyebrow={EYEBROW} title={about.title} align="left" />

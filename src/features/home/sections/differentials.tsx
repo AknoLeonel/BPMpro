@@ -29,11 +29,7 @@ function DifferentialsStats({ show, stats = differentials.stats }: { show: boole
 
 export function Differentials({ showStats = visibility.stats }: { showStats?: boolean }) {
   return (
-    <section
-      id="diferenciais"
-      aria-labelledby="diferenciais-title"
-      className="scroll-mt-[88px] bg-white py-20 lg:py-28"
-    >
+    <section id="diferenciais" aria-labelledby="diferenciais-title" className="bg-white py-20 lg:py-28">
       <Container>
         <SectionHeading id="diferenciais-title" align="left" eyebrow="Diferenciais" title={differentials.title} />
         <Stagger as="ul" className="mt-12 grid gap-4 sm:grid-cols-2 lg:mt-16 lg:grid-cols-4">

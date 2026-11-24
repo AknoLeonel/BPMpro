@@ -69,7 +69,7 @@ const contactSchema = z.object({
     .trim()
     .refine((value) => normalizeBrazilianPhone(value) !== null, "Informe um WhatsApp com DDD.")
     .transform((value) => normalizeBrazilianPhone(value) ?? value),
-  email: z.email("Informe um e-mail válido.").trim(),
+  email: z.string().trim().pipe(z.email("Informe um e-mail válido.")),
   area: z.enum(contactAreas, { error: "Selecione a área do projeto." }),
   stage: z.enum(contactStages, { error: "Selecione a etapa em que você está." }),
   message: z.string().trim().max(2000, "A mensagem pode ter até 2000 caracteres.").optional(),

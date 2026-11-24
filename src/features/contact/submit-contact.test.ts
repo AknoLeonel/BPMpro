@@ -80,7 +80,8 @@ describe("submitContact (integração schema + entrega + logger)", () => {
   it("falha na entrega vira erro amigável e é registrada sem dados pessoais", async () => {
     deliver.mockRejectedValue(new Error("CRM offline"));
     const state = await submitContact(valid, deliver);
-    expect(state).toEqual({ status: "error", message: deliveryErrorMessage });
+    // O React 19 reinicia o formulário após a action: os valores voltam para o usuário não redigitar.
+    expect(state).toEqual({ status: "error", message: deliveryErrorMessage, values: valid });
     expect(logger.error).toHaveBeenCalledWith("contact.delivery_failed", { error: "CRM offline" });
     for (const value of personalValues) expect(loggedText()).not.toContain(value);
   });

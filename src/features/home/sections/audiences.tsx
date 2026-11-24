@@ -14,7 +14,7 @@ function stepNumber(index: number): string {
 /** "Para quem": cada card inteiro abre o WhatsApp com a mensagem do momento da entidade. */
 export function Audiences() {
   return (
-    <section id="para-quem" aria-labelledby="para-quem-title" className="scroll-mt-22 bg-white py-20 lg:py-28">
+    <section id="para-quem" aria-labelledby="para-quem-title" className="bg-white py-20 lg:py-28">
       <Container>
         <SectionHeading id="para-quem-title" eyebrow="Para quem" title={audiences.title} align="center" />
 

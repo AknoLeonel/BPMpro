@@ -16,7 +16,7 @@ const EMPTY_CTA = "Quer ver o seu projeto aqui? Fale com a gente";
 /** Projetos realizados: galeria (só projetos autorizados) ou estado vazio honesto com mosaico de marca. */
 export function Projects({ items = projects.items }: { items?: readonly Project[] }) {
   return (
-    <section id="projetos" aria-labelledby="projetos-title" className="scroll-mt-[88px] bg-ink-950 py-20 lg:py-28">
+    <section id="projetos" aria-labelledby="projetos-title" className="bg-ink-950 py-20 lg:py-28">
       <Container>
         <SectionHeading
           id="projetos-title"

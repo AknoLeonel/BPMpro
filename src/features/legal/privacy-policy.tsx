@@ -188,7 +188,7 @@ export function PrivacyPolicy() {
         <div className="mt-12 space-y-12 text-base text-ink-700 leading-relaxed">
           {sections.map((section, index) => (
             <Reveal key={section.id}>
-              <section id={section.id} aria-labelledby={`${section.id}-title`} className="scroll-mt-[88px]">
+              <section id={section.id} aria-labelledby={`${section.id}-title`}>
                 <h2
                   id={`${section.id}-title`}
                   className="flex items-baseline gap-3 font-display font-semibold text-ink-950 text-xl sm:text-2xl"

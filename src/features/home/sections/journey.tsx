@@ -39,7 +39,7 @@ export function Journey() {
     <section
       id="como-funciona"
       aria-labelledby="como-funciona-title"
-      className="relative scroll-mt-22 overflow-hidden bg-ink-950 py-20 text-white lg:py-28"
+      className="relative overflow-hidden bg-ink-950 py-20 text-white lg:py-28"
     >
       <Container>
         <SectionHeading id="como-funciona-title" eyebrow="Como funciona" title={journey.title} tone="dark" />

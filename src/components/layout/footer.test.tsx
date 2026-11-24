@@ -27,7 +27,7 @@ describe("Footer", () => {
     expect(screen.getByText(footerContent.signature)).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /página inicial/ })).toHaveAttribute("href", "/");
     expect(screen.getByText(siteConfig.domain)).toBeInTheDocument();
-    expect(screen.getByText(`© ${new Date().getFullYear()} ${siteConfig.fullName}`)).toBeInTheDocument();
+    expect(document.body).toHaveTextContent(`© ${new Date().getFullYear()} ${siteConfig.fullName}`);
   });
 
   it("mantém o CNPJ oculto enquanto não for liberado", () => {

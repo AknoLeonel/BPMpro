@@ -20,7 +20,7 @@ const FaqList = dynamic(() => import("./faq").then((mod) => mod.FaqList), {
 export function TestimonialsSection() {
   if (!visibility.testimonials || testimonials.items.length === 0) return null;
   return (
-    <section id="depoimentos" aria-labelledby="depoimentos-title" className="scroll-mt-24 bg-ink-100 py-24 sm:py-32">
+    <section id="depoimentos" aria-labelledby="depoimentos-title" className="bg-ink-100 py-20 lg:py-28">
       <Container className="grid items-center gap-12 lg:grid-cols-[1fr_1.4fr] lg:gap-16">
         <div>
           <SectionHeading id="depoimentos-title" align="left" title={testimonials.title} />
@@ -37,7 +37,7 @@ export function TestimonialsSection() {
 /** Perguntas frequentes — título e CTA à esquerda, accordion à direita. */
 export function FaqSection() {
   return (
-    <section id="duvidas" aria-labelledby="duvidas-title" className="scroll-mt-24 bg-white py-24 sm:py-32">
+    <section id="duvidas" aria-labelledby="duvidas-title" className="bg-white py-20 lg:py-28">
       <Container className="grid gap-12 lg:grid-cols-[1fr_1.5fr] lg:gap-16">
         <div className="lg:sticky lg:top-28 lg:self-start">
           <SectionHeading id="duvidas-title" align="left" eyebrow="Perguntas frequentes" title={faq.title} />

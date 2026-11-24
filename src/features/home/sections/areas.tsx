@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils";
 /** Áreas e modalidades: blocos de cor chapada (azul-petróleo / preto), esferas e chips de modalidade. */
 export function Areas() {
   return (
-    <section id="areas" aria-labelledby="areas-title" className="scroll-mt-[88px] bg-ink-100 py-20 lg:py-28">
+    <section id="areas" aria-labelledby="areas-title" className="bg-ink-100 py-20 lg:py-28">
       <Container>
         <SectionHeading id="areas-title" align="left" eyebrow="Áreas e modalidades" title={areas.title} />
 

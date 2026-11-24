@@ -1,7 +1,7 @@
 "use client";
 
-import { AnimatePresence, m, useMotionValueEvent, useReducedMotion, useScroll } from "motion/react";
-import { useState } from "react";
+import { AnimatePresence, m, useReducedMotion } from "motion/react";
+import { useScrolledPast } from "@/components/motion/use-scrolled-past";
 import { distance, duration, easing, exitDuration } from "@/lib/motion";
 import { whatsappMessages } from "@/lib/site-config";
 import { whatsappUrl } from "@/lib/whatsapp";
@@ -12,10 +12,8 @@ const SHOW_AFTER = 480;
 
 /** CTA flutuante de WhatsApp: entra após o hero e some no topo da página. */
 export function WhatsAppButton() {
-  const [visible, setVisible] = useState(false);
   const reduced = useReducedMotion() ?? false;
-  const { scrollY } = useScroll();
-  useMotionValueEvent(scrollY, "change", (y) => setVisible(y > SHOW_AFTER));
+  const visible = useScrolledPast(SHOW_AFTER);
 
   return (
     <AnimatePresence>

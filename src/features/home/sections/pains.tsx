@@ -9,7 +9,7 @@ import { pains } from "@/lib/site-config";
 /** "Dores": os quatro pontos em que o projeto trava, sobre o cinza-claro da marca. */
 export function Pains() {
   return (
-    <section id="dores" aria-labelledby="dores-title" className="scroll-mt-[88px] bg-ink-100 py-20 lg:py-28">
+    <section id="dores" aria-labelledby="dores-title" className="bg-ink-100 py-20 lg:py-28">
       <Container>
         <SectionHeading id="dores-title" title={pains.title} />
 
