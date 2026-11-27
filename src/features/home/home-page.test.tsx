@@ -15,7 +15,10 @@ function renderHome() {
   );
 }
 
-/** Ordem do funil definida no documento "esqueleto e conteúdo" (depoimentos ficam ocultos). */
+/**
+ * Ordem do funil (documento "esqueleto e conteúdo" + seção "Onde já atuamos").
+ * Projetos e depoimentos ficam ocultos até as autorizações.
+ */
 const funnel = [
   "dores",
   "quem-somos",
@@ -24,7 +27,7 @@ const funnel = [
   "para-quem",
   "areas",
   "diferenciais",
-  "projetos",
+  "onde-atuamos",
   "duvidas",
   "contato",
 ];
@@ -67,11 +70,18 @@ describe("HomePage (integração)", () => {
     expect(screen.getByText(pains.closing)).toBeInTheDocument();
   });
 
-  it("respeita as regras do documento: sem valores, sem números nem depoimentos ocultos", () => {
+  it("respeita as regras: números de autoridade visíveis, itens ocultos fora da página", () => {
     const { container } = renderHome();
-    expect(container.textContent).not.toMatch(/R\$/);
+    // Único valor em reais é o total captado (selo e bloco de números) — nunca valor de projeto.
+    // Lê só o texto acessível: a cópia visual da contagem (aria-hidden) começa em "R$ 0".
+    const accessible = container.cloneNode(true) as HTMLElement;
+    for (const hidden of accessible.querySelectorAll("[aria-hidden='true']")) hidden.remove();
+    const amounts = accessible.textContent?.match(/R\$ ?\d[\d.,]*/g) ?? [];
+    expect(new Set(amounts)).toEqual(new Set(["R$ 16"]));
+    expect(screen.getByTestId("differentials-stats")).toBeInTheDocument();
     expect(document.getElementById("depoimentos")).toBeNull();
-    expect(screen.queryByTestId("differentials-stats")).toBeNull();
+    expect(document.getElementById("projetos")).toBeNull();
+    expect(screen.queryByText("anos de experiência")).toBeNull();
   });
 
   it("leva ao WhatsApp em todos os pontos de contato da página", () => {

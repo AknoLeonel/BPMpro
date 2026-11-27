@@ -7,6 +7,7 @@ import { Container } from "@/components/ui/container";
 import { LazyImage } from "@/components/ui/lazy-image";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { stagger } from "@/lib/motion";
+import { aboutProof } from "@/lib/numbers";
 import { about } from "@/lib/site-config";
 
 const EYEBROW = "Quem somos";
@@ -74,7 +75,15 @@ export function About() {
         <div>
           <SectionHeading id="quem-somos-title" eyebrow={EYEBROW} title={about.title} align="left" />
           <Reveal delay={stagger.base}>
-            <p className="mt-6 max-w-xl text-pretty text-ink-600 text-lg leading-relaxed">{about.text}</p>
+            <p className="mt-6 max-w-xl text-pretty text-ink-600 text-lg leading-relaxed">
+              {about.text}
+              {aboutProof.visible ? (
+                <>
+                  {" "}
+                  <strong className="font-semibold text-ink-950">{aboutProof.text}</strong>
+                </>
+              ) : null}
+            </p>
             <ButtonLink href={about.cta.href} variant="secondary" size="lg" className="mt-10">
               {about.cta.label}
               <ArrowRight

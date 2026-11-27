@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import { Footer } from "@/components/layout/footer";
 import { Header } from "@/components/layout/header";
+import { ScrollToHash } from "@/components/layout/scroll-to-hash";
 import { WhatsAppButton } from "@/components/layout/whatsapp-button";
 import { MotionProvider } from "@/components/motion/motion-provider";
 import { ScrollProgress } from "@/components/motion/scroll-progress";
@@ -70,6 +71,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           <main id="conteudo">{children}</main>
           <Footer />
           <WhatsAppButton />
+          <ScrollToHash />
         </MotionProvider>
         <BrowserObservability />
         <script

@@ -7,6 +7,7 @@ import { ButtonLink } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
 import { LazyImage } from "@/components/ui/lazy-image";
 import { stagger } from "@/lib/motion";
+import { heroSeals, onlyVisible } from "@/lib/numbers";
 import { hero } from "@/lib/site-config";
 
 /**
@@ -113,7 +114,7 @@ export function Hero() {
           </StaggerItem>
           <StaggerItem>
             <ul aria-label="Diferenciais" className="mt-10 flex flex-wrap gap-2">
-              {hero.seals.map((seal) => (
+              {onlyVisible(heroSeals).map(({ text: seal }) => (
                 <li
                   key={seal}
                   className="inline-flex h-8 items-center gap-2 rounded-full bg-ink-800 px-3.5 font-medium text-ink-100 text-sm"

@@ -39,7 +39,7 @@ test.describe("Home", () => {
       "para-quem",
       "areas",
       "diferenciais",
-      "projetos",
+      "onde-atuamos",
       "duvidas",
       "contato",
     ];
@@ -130,11 +130,47 @@ test.describe("Home", () => {
     expect(results.violations.map((v) => `${v.id}: ${v.nodes.map((n) => n.target.join(" ")).join(" | ")}`)).toEqual([]);
   });
 
-  test("regras do documento: sem valores, depoimentos ou números ocultos", async ({ page }) => {
+  test("números de autoridade: selos, bloco com contagem e itens ocultos fora da página", async ({ page }) => {
     await page.goto("/");
-    await expect(page.locator("main")).not.toContainText("R$");
+    const seals = page.getByRole("list", { name: "Diferenciais" }).getByRole("listitem");
+    await expect(seals).toHaveText([
+      "+ de R$ 16 milhões captados",
+      "Federal, estadual e distrital",
+      "Do edital à prestação de contas",
+    ]);
+    // O valor final já vem no HTML (sr-only); a contagem termina no texto exato.
+    const stats = page.getByTestId("differentials-stats");
+    await expect(stats.locator(".sr-only")).toHaveText(["+ de R$ 16 milhões", "+ de 60", "18", "3 + 3"]);
+    await stats.scrollIntoViewIfNeeded();
+    await expect(stats.locator("[data-count-visual]").first()).toHaveText("+ de R$ 16 milhões", { timeout: 5000 });
+    await expect(page.getByText("Base comprovada, atualizada em novembro/2026.")).toBeVisible();
+    await expect(page.getByText("anos de experiência")).toHaveCount(0);
     await expect(page.locator("#depoimentos")).toHaveCount(0);
-    await expect(page.getByTestId("differentials-stats")).toHaveCount(0);
+    await expect(page.locator("#projetos")).toHaveCount(0);
+  });
+
+  test("seção Onde atuamos: órgãos em texto, fontes em chips e âncora no menu", async ({ page, isMobile }) => {
+    await page.goto("/");
+    if (isMobile) {
+      await page.getByRole("button", { name: "Abrir menu" }).click();
+      await page
+        .getByRole("navigation", { name: "Menu móvel" })
+        .getByRole("link", { name: /Onde atuamos/ })
+        .click();
+    } else {
+      await page.getByRole("navigation", { name: "Principal" }).getByRole("link", { name: "Onde atuamos" }).click();
+    }
+    await expect(page).toHaveURL(/#onde-atuamos$/);
+    const section = page.locator("#onde-atuamos");
+    await expect(section.getByRole("heading", { level: 2 })).toHaveText("Onde já colocamos projetos em movimento");
+    await expect(
+      section.getByRole("list", { name: "Órgãos com projetos aprovados" }).getByRole("listitem"),
+    ).toHaveCount(6);
+    await expect(
+      section.getByRole("list", { name: "Fontes de recurso com que trabalhamos" }).getByRole("listitem"),
+    ).toHaveCount(3);
+    await expect(section.locator("img")).toHaveCount(0);
+    await expect(page.getByRole("link", { name: "Projetos", exact: true })).toHaveCount(0);
   });
 
   test("botão de WhatsApp entra após rolar a página", async ({ page }) => {

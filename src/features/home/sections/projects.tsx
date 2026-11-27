@@ -1,20 +1,20 @@
 import { MapPin } from "lucide-react";
 import { BrandSymbol } from "@/components/layout/brand-symbol";
-import { Reveal } from "@/components/motion/reveal";
 import { Stagger, StaggerItem } from "@/components/motion/stagger";
-import { QuarterCircle, Stripes, Triangles } from "@/components/ui/brand-shapes";
+import { QuarterCircle } from "@/components/ui/brand-shapes";
 import { Container } from "@/components/ui/container";
 import { LazyImage } from "@/components/ui/lazy-image";
 import { SectionHeading } from "@/components/ui/section-heading";
-import { WhatsAppLink } from "@/components/ui/whatsapp-link";
-import { stagger } from "@/lib/motion";
-import { areas, type Project, projects } from "@/lib/site-config";
+import { onlyVisible, type Project, projectItems } from "@/lib/numbers";
+import { projects } from "@/lib/site-config";
 
-/** Chamada do estado vazio (não há campo no site-config para ela). */
-const EMPTY_CTA = "Quer ver o seu projeto aqui? Fale com a gente";
-
-/** Projetos realizados: galeria (só projetos autorizados) ou estado vazio honesto com mosaico de marca. */
-export function Projects({ items = projects.items }: { items?: readonly Project[] }) {
+/**
+ * Projetos realizados: galeria só com os projetos marcados como visíveis em `numbers.ts`
+ * (cada um depende da autorização da entidade). Sem nenhum visível, a seção não aparece.
+ */
+export function Projects({ items = projectItems }: { items?: readonly Project[] }) {
+  const visible = onlyVisible(items);
+  if (visible.length === 0) return null;
   return (
     <section id="projetos" aria-labelledby="projetos-title" className="bg-ink-950 py-20 lg:py-28">
       <Container>
@@ -26,7 +26,7 @@ export function Projects({ items = projects.items }: { items?: readonly Project[
           title={projects.title}
           description={projects.subtitle}
         />
-        {items.length > 0 ? <ProjectGallery items={items} /> : <ProjectsEmpty />}
+        <ProjectGallery items={visible} />
       </Container>
     </section>
   );
@@ -80,45 +80,5 @@ function ProjectGallery({ items }: { items: readonly Project[] }) {
         ))}
       </Stagger>
     </section>
-  );
-}
-
-function ProjectsEmpty() {
-  const [first = "", second = "", third = ""] = areas.modalities;
-  return (
-    <div
-      data-testid="projects-empty"
-      className="mt-12 grid gap-10 lg:mt-16 lg:grid-cols-[1.2fr_1fr] lg:items-center lg:gap-16"
-    >
-      <Reveal>
-        <div aria-hidden className="grid aspect-[3/2] grid-cols-3 grid-rows-2 gap-2 sm:gap-3">
-          <div className="flex items-end rounded-md bg-brand-500 p-4 font-display font-semibold text-sm text-white sm:text-lg">
-            {first}
-          </div>
-          <div className="overflow-hidden rounded-md">
-            <Triangles className="size-full" />
-          </div>
-          <div className="flex items-center justify-center rounded-md bg-ink-900">
-            <BrandSymbol className="h-1/2 text-brand-400" />
-          </div>
-          <div className="relative overflow-hidden rounded-md bg-ink-800">
-            <QuarterCircle className="absolute top-0 left-0 size-full -scale-x-100" />
-          </div>
-          <div className="flex items-end rounded-md bg-white p-4 font-display font-semibold text-ink-950 text-sm sm:text-lg">
-            {second}
-          </div>
-          <div className="flex flex-col justify-between overflow-hidden rounded-md bg-ink-900 p-4">
-            <Stripes count={3} className="w-2/3" />
-            <span className="font-display font-semibold text-sm text-white sm:text-lg">{third}</span>
-          </div>
-        </div>
-      </Reveal>
-      <Reveal delay={stagger.base * 2}>
-        <p className="text-pretty text-ink-100 text-lg leading-relaxed">{projects.note}</p>
-        <WhatsAppLink context="projects" variant="inverse" size="lg" className="mt-8 h-auto min-h-14 py-3 text-left">
-          {EMPTY_CTA}
-        </WhatsAppLink>
-      </Reveal>
-    </div>
   );
 }

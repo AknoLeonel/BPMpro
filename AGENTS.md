@@ -97,5 +97,5 @@ Zod · lucide-react · pnpm · Node 22.
 ## 8. Convenções
 
 - Idioma da UI e da documentação: **português (Brasil)**. Código (identificadores) em inglês.
-- Conteúdo editável centralizado em `src/lib/site-config.ts` (números/cases atuais são **ilustrativos**).
+- Conteúdo editável centralizado em `src/lib/site-config.ts` (textos) e `src/lib/numbers.ts` (números de autoridade, órgãos, fontes de recurso e projetos — cada item com `visible`, para mostrar/ocultar sem mexer em componente).
 - Segredos nunca no repositório — use `.env.local` e secrets do GitHub/Vercel.

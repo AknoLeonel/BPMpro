@@ -84,7 +84,7 @@ export function Header() {
     const onKey = (event: KeyboardEvent) => {
       if (event.key === "Escape") close(true);
     };
-    const desktop = window.matchMedia("(min-width: 1024px)");
+    const desktop = window.matchMedia("(min-width: 1280px)");
     const onDesktop = (event: MediaQueryListEvent) => {
       if (event.matches) close(false);
     };
@@ -139,7 +139,7 @@ export function Header() {
       <Container className="flex h-18 items-center justify-between gap-6">
         <Logo tone={light ? "light" : "dark"} />
 
-        <nav aria-label="Principal" className="hidden lg:block">
+        <nav aria-label="Principal" className="hidden xl:block">
           <ul className="flex items-center gap-1">
             {navItems.map((item) => {
               const isActive = activeId === item.href.slice(1);
@@ -149,7 +149,7 @@ export function Header() {
                     href={resolveNavHref(item.href, isHome)}
                     aria-current={isActive ? "true" : undefined}
                     className={cn(
-                      "group/nav relative inline-flex h-11 items-center px-3.5 font-medium text-sm transition-colors xl:px-4",
+                      "group/nav relative inline-flex h-11 items-center whitespace-nowrap px-3.5 font-medium text-sm transition-colors 2xl:px-4",
                       "rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400",
                       light
                         ? "text-white/85 hover:text-white"
@@ -161,7 +161,7 @@ export function Header() {
                     <span
                       aria-hidden
                       className={cn(
-                        "absolute inset-x-3.5 bottom-2 h-0.5 origin-left bg-signal-500 transition-transform duration-300 ease-out motion-reduce:transition-none xl:inset-x-4",
+                        "absolute inset-x-3.5 bottom-2 h-0.5 origin-left bg-signal-500 transition-transform duration-300 ease-out motion-reduce:transition-none 2xl:inset-x-4",
                         isActive ? "scale-x-100" : "scale-x-0 group-hover/nav:scale-x-100 group-hover/nav:opacity-40",
                       )}
                     />
@@ -178,7 +178,7 @@ export function Header() {
             message={whatsappMessages.default}
             size="md"
             variant={light ? "inverse" : "primary"}
-            className={cn("hidden sm:inline-flex", open && "sm:hidden")}
+            className={cn("hidden whitespace-nowrap sm:inline-flex", open && "sm:hidden")}
           >
             Fale no WhatsApp
           </WhatsAppLink>
@@ -186,7 +186,7 @@ export function Header() {
             ref={toggleRef}
             type="button"
             className={cn(
-              "inline-flex size-11 items-center justify-center rounded-full transition-colors lg:hidden",
+              "inline-flex size-11 items-center justify-center rounded-full transition-colors xl:hidden",
               "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400",
               light ? "text-white hover:bg-white/10" : "text-ink-950 hover:bg-ink-100",
             )}
@@ -222,7 +222,7 @@ export function Header() {
           <m.nav
             id="mobile-menu"
             aria-label="Menu móvel"
-            className="fixed inset-x-0 top-18 bottom-0 overflow-y-auto bg-ink-950 lg:hidden"
+            className="fixed inset-x-0 top-18 bottom-0 overflow-y-auto bg-ink-950 xl:hidden"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1, transition: { duration: duration.medium, ease: easing.enter } }}
             exit={{ opacity: 0, transition: { duration: exitDuration(duration.small), ease: easing.exit } }}

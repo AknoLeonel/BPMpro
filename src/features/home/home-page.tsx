@@ -3,6 +3,7 @@ import { Areas } from "./sections/areas";
 import { Audiences } from "./sections/audiences";
 import { Contact } from "./sections/contact";
 import { Differentials } from "./sections/differentials";
+import { Experience } from "./sections/experience";
 import { Hero } from "./sections/hero";
 import { Journey } from "./sections/journey";
 import { Pains } from "./sections/pains";
@@ -28,6 +29,7 @@ export function HomePage() {
       <Audiences />
       <Areas />
       <Differentials />
+      <Experience />
       {/* Fundo */}
       <Projects />
       <TestimonialsSection />
