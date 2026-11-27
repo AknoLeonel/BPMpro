@@ -9,15 +9,24 @@ interface StaggerProps {
   className?: string;
   gap?: number;
   as?: "div" | "ul" | "ol";
+  /** Nomeia a lista pelo seu título (ex.: o h3 do bloco). */
+  "aria-labelledby"?: string;
 }
 
 /** Container que coreografa a entrada sequencial dos filhos `StaggerItem`. */
-export function Stagger({ children, className, gap = stagger.base, as = "div" }: StaggerProps) {
+export function Stagger({
+  children,
+  className,
+  gap = stagger.base,
+  as = "div",
+  "aria-labelledby": labelledBy,
+}: StaggerProps) {
   const reduced = useReducedMotion() ?? false;
   const Component = m[as];
   return (
     <Component
       className={className}
+      aria-labelledby={labelledBy}
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, amount: 0.15 }}

@@ -9,7 +9,11 @@
  * - fotos de entidades só com autorização.
  *
  * Contatos (telefone, WhatsApp, endereço) são provisórios — substitua pelos dados reais.
+ *
+ * Números de autoridade, órgãos, fontes de recurso e projetos ficam em `numbers.ts`.
  */
+import { hasVisibleProjects, sportsSpecialistText } from "./numbers";
+
 export const siteConfig = {
   name: "BPM Pro",
   shortName: "BPM",
@@ -37,7 +41,6 @@ export const siteConfig = {
 
 /** Blocos que só aparecem após a liberação da gestão. */
 export const visibility = {
-  stats: false,
   testimonials: false,
   cnpj: false,
 } as const;
@@ -49,14 +52,20 @@ export const whatsappMessages = {
   faq: "Olá! Tenho uma dúvida sobre projetos com recursos públicos.",
 } as const;
 
-export const navItems = [
+/** Links para "Projetos" somem enquanto nenhum projeto estiver visível (a seção não é exibida). */
+function withProjects<T extends { href: string }>(links: readonly T[]): T[] {
+  return links.filter((link) => hasVisibleProjects || !link.href.endsWith("#projetos"));
+}
+
+export const navItems = withProjects([
   { href: "#servicos", label: "Serviços" },
   { href: "#como-funciona", label: "Como funciona" },
   { href: "#para-quem", label: "Para quem" },
+  { href: "#onde-atuamos", label: "Onde atuamos" },
   { href: "#projetos", label: "Projetos" },
   { href: "#duvidas", label: "Dúvidas" },
   { href: "#contato", label: "Contato" },
-] as const;
+]);
 
 export const hero = {
   eyebrow: "Projetos com recursos públicos de ponta a ponta",
@@ -65,7 +74,6 @@ export const hero = {
     "Captamos recursos, escrevemos, executamos e prestamos contas dos projetos da sua entidade. Do edital ao último comprovante, com um único parceiro.",
   primaryCta: { label: "Quero um diagnóstico gratuito", href: "#contato" },
   secondaryCta: { label: "Ver como funciona", href: "#como-funciona" },
-  seals: ["Esporte, cultura e turismo", "Federal, estadual e distrital", "Do edital à prestação de contas"],
 } as const;
 
 export const pains = {
@@ -255,7 +263,7 @@ export const differentials = {
     {
       icon: "Medal",
       title: "Especialistas em esporte",
-      description: "Experiência em dezenas de modalidades, do futsal ao automobilismo.",
+      description: sportsSpecialistText,
     },
     {
       icon: "Eye",
@@ -268,33 +276,12 @@ export const differentials = {
       description: "Controle de prazos, documentos e relatórios com ferramentas digitais.",
     },
   ],
-  /** Oculto até a aprovação da gestão (`visibility.stats`). Preencha os valores reais antes de liberar. */
-  stats: [
-    { value: 0, prefix: "+ de ", suffix: "", label: "projetos aprovados" },
-    { value: 0, prefix: "+ de ", suffix: "", label: "entidades atendidas" },
-    { value: 0, prefix: "", suffix: "", label: "anos de experiência" },
-  ],
 } as const;
 
-export interface Project {
-  name: string;
-  modality: string;
-  city: string;
-  /** Foto publicada somente com autorização da entidade. */
-  image: string;
-}
-
-export const projects: {
-  title: string;
-  subtitle: string;
-  note: string;
-  items: readonly Project[];
-} = {
+export const projects = {
   title: "Projetos que já saíram do papel",
   subtitle: "Campeonatos, festivais e projetos sociais executados de ponta a ponta.",
-  note: "Publicamos cada projeto somente com autorização da entidade. Novos projetos entram aqui em breve.",
-  items: [],
-};
+} as const;
 
 export interface Testimonial {
   quote: string;
@@ -356,12 +343,13 @@ export const contact = {
 
 export const footer = {
   signature: "Resultado comprovado, do edital à prestação de contas.",
-  links: [
+  links: withProjects([
     { href: "/#servicos", label: "Serviços" },
     { href: "/#como-funciona", label: "Como funciona" },
+    { href: "/#onde-atuamos", label: "Onde atuamos" },
     { href: "/#projetos", label: "Projetos" },
     { href: "/#duvidas", label: "Dúvidas" },
     { href: "/#contato", label: "Contato" },
     { href: "/privacidade", label: "Política de Privacidade" },
-  ],
-} as const;
+  ]),
+};

@@ -41,7 +41,7 @@ export function Logo({ tone = "dark", className }: { tone?: Tone; className?: st
             Pro
           </span>
         </span>
-        <span className="mt-1 hidden font-display text-[0.55rem] uppercase tracking-[0.22em] opacity-80 sm:block">
+        <span className="mt-1 hidden whitespace-nowrap font-display text-[0.55rem] uppercase tracking-[0.22em] opacity-80 sm:block">
           Brasil Projetos em Movimento
         </span>
       </span>

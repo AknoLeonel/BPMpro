@@ -1,33 +1,42 @@
+import { Repeat } from "lucide-react";
 import { AnimatedCounter } from "@/components/motion/animated-counter";
 import { Reveal } from "@/components/motion/reveal";
 import { Stagger, StaggerItem } from "@/components/motion/stagger";
 import { Container } from "@/components/ui/container";
 import { Icon } from "@/components/ui/icon";
 import { SectionHeading } from "@/components/ui/section-heading";
-import { differentials, visibility } from "@/lib/site-config";
+import {
+  returningClients as defaultReturningClients,
+  stats as defaultStats,
+  statsNote as defaultStatsNote,
+  onlyVisible,
+  type Stat,
+} from "@/lib/numbers";
+import { differentials } from "@/lib/site-config";
+import { cn } from "@/lib/utils";
 
-type Stat = (typeof differentials.stats)[number];
+/** Colunas no computador conforme a quantidade de números visíveis (classes literais para o Tailwind). */
+const desktopColumns: Record<number, string> = {
+  1: "lg:grid-cols-1",
+  2: "lg:grid-cols-2",
+  3: "lg:grid-cols-3",
+  4: "lg:grid-cols-4",
+  5: "lg:grid-cols-5",
+};
 
-/** Bloco de números — só renderiza quando a gestão liberar (`visibility.stats`). */
-function DifferentialsStats({ show, stats = differentials.stats }: { show: boolean; stats?: readonly Stat[] }) {
-  if (!show || stats.length === 0) return null;
-  return (
-    <Reveal className="mt-16 border-ink-200 border-t pt-12">
-      <dl data-testid="differentials-stats" className="grid gap-10 sm:grid-cols-3">
-        {stats.map((stat) => (
-          <div key={stat.label} className="flex flex-col-reverse gap-2">
-            <dt className="font-medium text-ink-600">{stat.label}</dt>
-            <dd className="font-display font-semibold text-5xl text-ink-950 tracking-[-0.02em] lg:text-6xl">
-              <AnimatedCounter value={stat.value} prefix={stat.prefix} suffix={stat.suffix} />
-            </dd>
-          </div>
-        ))}
-      </dl>
-    </Reveal>
-  );
+interface DifferentialsProps {
+  /** Por padrão, os dados de `numbers.ts`; os testes injetam outros. */
+  stats?: readonly Stat[];
+  statsNote?: typeof defaultStatsNote;
+  returningClients?: typeof defaultReturningClients;
 }
 
-export function Differentials({ showStats = visibility.stats }: { showStats?: boolean }) {
+export function Differentials({
+  stats = defaultStats,
+  statsNote = defaultStatsNote,
+  returningClients = defaultReturningClients,
+}: DifferentialsProps) {
+  const visibleStats = onlyVisible(stats);
   return (
     <section id="diferenciais" aria-labelledby="diferenciais-title" className="bg-white py-20 lg:py-28">
       <Container>
@@ -49,7 +58,48 @@ export function Differentials({ showStats = visibility.stats }: { showStats?: bo
             </StaggerItem>
           ))}
         </Stagger>
-        <DifferentialsStats show={showStats} />
+
+        {visibleStats.length > 0 ? (
+          <Reveal className="mt-16 rounded-lg bg-ink-950 p-8 sm:p-10 lg:p-12">
+            <h3 className="sr-only">A BPM em números</h3>
+            <dl
+              data-testid="differentials-stats"
+              className={cn("grid grid-cols-2 gap-x-6 gap-y-10", desktopColumns[Math.min(visibleStats.length, 5)])}
+            >
+              {visibleStats.map((stat) => (
+                <div key={stat.label} className="flex flex-col-reverse gap-3 border-signal-500 border-l-2 pl-4">
+                  <dt className="text-ink-400 text-sm leading-snug">{stat.label}</dt>
+                  <dd className="text-balance font-display font-semibold text-2xl text-white leading-tight tracking-[-0.01em] sm:text-3xl xl:text-4xl">
+                    <AnimatedCounter value={stat.value} />
+                  </dd>
+                </div>
+              ))}
+            </dl>
+            {statsNote.visible ? <p className="mt-10 text-ink-400 text-xs">{statsNote.text}</p> : null}
+          </Reveal>
+        ) : null}
+
+        {returningClients.visible ? (
+          <Reveal className="mt-4">
+            <aside
+              aria-labelledby="clientes-que-voltam"
+              className="flex flex-col gap-5 rounded-lg bg-brand-500 p-8 text-white sm:flex-row sm:items-center sm:gap-8 sm:p-10"
+            >
+              <span
+                aria-hidden
+                className="inline-flex size-14 shrink-0 items-center justify-center rounded-full bg-white/15"
+              >
+                <Repeat strokeWidth={1.5} className="size-7" />
+              </span>
+              <div>
+                <h3 id="clientes-que-voltam" className="font-display font-semibold text-xl">
+                  {returningClients.title}
+                </h3>
+                <p className="mt-2 text-pretty text-lg leading-relaxed">{returningClients.text}</p>
+              </div>
+            </aside>
+          </Reveal>
+        ) : null}
       </Container>
     </section>
   );

@@ -2,6 +2,7 @@ import { render, screen, within } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { describe, expect, it } from "vitest";
 import { MotionProvider } from "@/components/motion/motion-provider";
+import { aboutProof, heroSeals } from "@/lib/numbers";
 import { about, hero, pains } from "@/lib/site-config";
 import { About } from "./about";
 import { Hero } from "./hero";
@@ -26,7 +27,8 @@ describe("Hero", () => {
   it("mostra os três selos", () => {
     renderWithMotion(<Hero />);
     const seals = within(screen.getByRole("list", { name: "Diferenciais" })).getAllByRole("listitem");
-    expect(seals.map((s) => s.textContent)).toEqual([...hero.seals]);
+    expect(seals.map((s) => s.textContent)).toEqual(heroSeals.filter((seal) => seal.visible).map((seal) => seal.text));
+    expect(seals[0]).toHaveTextContent("+ de R$ 16 milhões captados");
   });
 });
 
@@ -52,7 +54,8 @@ describe("About", () => {
     const section = screen.getByRole("region", { name: about.title });
     expect(section).toHaveAttribute("id", "quem-somos");
     expect(screen.getByRole("heading", { level: 2, name: about.title })).toHaveAttribute("id", "quem-somos-title");
-    expect(screen.getByText(about.text)).toBeInTheDocument();
+    // A frase com os números de autoridade fecha o texto de Quem somos.
+    expect(screen.getByText(aboutProof.text).closest("p")).toHaveTextContent(`${about.text} ${aboutProof.text}`);
     expect(screen.getByRole("link", { name: about.cta.label })).toHaveAttribute("href", "#servicos");
   });
 });
