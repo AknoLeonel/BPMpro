@@ -4,6 +4,7 @@ import { animate, useInView, useReducedMotion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import { countUpFrame, hasDigits } from "@/lib/count-up";
 import { duration, easing } from "@/lib/motion";
+import { cn } from "@/lib/utils";
 
 interface AnimatedCounterProps {
   /** Texto final exato (ex.: "+ de R$ 16 milhões", "3 + 3"). Os algarismos contam a partir de 0. */
@@ -43,9 +44,13 @@ export function AnimatedCounter({ value, className }: AnimatedCounterProps) {
   }, [inView, reduced, value]);
 
   return (
-    <span ref={ref} className={className}>
+    <span ref={ref} className={cn("relative inline-block", className)}>
       <span className="sr-only">{value}</span>
-      <span aria-hidden className="tabular-nums">
+      {/* Reserva o espaço do texto final: a contagem não muda a altura do bloco (sem layout shift). */}
+      <span aria-hidden className="invisible tabular-nums">
+        {value}
+      </span>
+      <span aria-hidden data-count-visual className="absolute inset-0 tabular-nums">
         {display}
       </span>
     </span>

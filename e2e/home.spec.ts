@@ -142,7 +142,7 @@ test.describe("Home", () => {
     const stats = page.getByTestId("differentials-stats");
     await expect(stats.locator(".sr-only")).toHaveText(["+ de R$ 16 milhões", "+ de 60", "18", "3 + 3"]);
     await stats.scrollIntoViewIfNeeded();
-    await expect(stats.locator("[aria-hidden]").first()).toHaveText("+ de R$ 16 milhões", { timeout: 5000 });
+    await expect(stats.locator("[data-count-visual]").first()).toHaveText("+ de R$ 16 milhões", { timeout: 5000 });
     await expect(page.getByText("Base comprovada, atualizada em novembro/2026.")).toBeVisible();
     await expect(page.getByText("anos de experiência")).toHaveCount(0);
     await expect(page.locator("#depoimentos")).toHaveCount(0);
