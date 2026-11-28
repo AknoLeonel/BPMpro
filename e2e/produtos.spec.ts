@@ -32,8 +32,23 @@ test.describe("Produtos", () => {
     });
 
     test(`${path}: sem violações de acessibilidade (WCAG A/AA)`, async ({ page }) => {
+      // O axe mede o contraste das cores finais: no CI lento, rodar com as entradas ainda em fade
+      // (opacidade < 1) gera falsos "color-contrast". Movimento reduzido + espera garantem o estado final.
+      // Página longa + axe: folga para o CI, que é bem mais lento que a máquina local.
+      test.setTimeout(60_000);
+      await page.emulateMedia({ reducedMotion: "reduce" });
       await page.goto(path);
       await scrollThrough(page);
+      await page.waitForFunction(() =>
+        document
+          .getAnimations()
+          .every(
+            (animation) =>
+              animation.playState !== "running" ||
+              animation.effect?.getTiming().iterations === Number.POSITIVE_INFINITY,
+          ),
+      );
+      await page.waitForTimeout(800);
       const results = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21aa"]).analyze();
       expect(results.violations.map((v) => `${v.id}: ${v.nodes.map((n) => n.target.join(" ")).join(" | ")}`)).toEqual(
         [],
