@@ -74,6 +74,24 @@ describe("parseContact", () => {
     },
   );
 
+  it("produto é opcional: aceita ausente ou vazio (ainda não sei)", () => {
+    const { product: _omit, ...withoutProduct } = { ...valid, product: "" };
+    expect(parseContact(withoutProduct).ok).toBe(true);
+    const empty = parseContact({ ...valid, product: "" });
+    expect(empty.ok && empty.data.product).toBe("");
+  });
+
+  it.each(["Selo Prata", "Selo Ouro"])("aceita o produto %s", (product) => {
+    const result = parseContact({ ...valid, product });
+    expect(result.ok && result.data.product).toBe(product);
+  });
+
+  it.each(["Selo Bronze", "selo ouro", 42])("rejeita produto desconhecido (%o)", (product) => {
+    const result = parseContact({ ...valid, product });
+    expect(result.ok).toBe(false);
+    if (!result.ok) expect(result.fieldErrors.product).toBe("Selecione um produto da lista.");
+  });
+
   it("retorna apenas o primeiro erro por campo", () => {
     const result = parseContact({ ...valid, name: "" });
     expect(result.ok).toBe(false);

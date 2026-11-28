@@ -56,6 +56,6 @@ describe("About", () => {
     expect(screen.getByRole("heading", { level: 2, name: about.title })).toHaveAttribute("id", "quem-somos-title");
     // A frase com os números de autoridade fecha o texto de Quem somos.
     expect(screen.getByText(aboutProof.text).closest("p")).toHaveTextContent(`${about.text} ${aboutProof.text}`);
-    expect(screen.getByRole("link", { name: about.cta.label })).toHaveAttribute("href", "#servicos");
+    expect(screen.getByRole("link", { name: about.cta.label })).toHaveAttribute("href", "/servicos");
   });
 });

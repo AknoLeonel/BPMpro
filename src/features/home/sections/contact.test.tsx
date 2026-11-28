@@ -7,10 +7,10 @@ import { Contact } from "./contact";
 
 vi.mock("@/features/contact/actions", () => ({ sendContact: vi.fn() }));
 
-const renderSection = () =>
+const renderSection = (props: Parameters<typeof Contact>[0] = {}) =>
   render(
     <MotionProvider>
-      <Contact />
+      <Contact {...props} />
     </MotionProvider>,
   );
 
@@ -21,6 +21,16 @@ describe("Contact (seção 13)", () => {
     expect(heading).toHaveAttribute("id", "contato-title");
     expect(screen.getByRole("region", { name: contact.title })).toHaveAttribute("id", "contato");
     expect(screen.getByText(contact.subtitle)).toBeInTheDocument();
+  });
+
+  it("aceita outro id e repassa o produto padrão ao formulário carregado sob demanda", async () => {
+    renderSection({ id: "fale-conosco", defaultProduct: "Selo Ouro" });
+    expect(screen.getByRole("region", { name: contact.title })).toHaveAttribute("id", "fale-conosco");
+    expect(screen.getByRole("heading", { level: 2, name: contact.title })).toHaveAttribute("id", "fale-conosco-title");
+    await act(async () => {
+      for (const observer of MockIntersectionObserver.instances) observer.trigger();
+    });
+    expect(await screen.findByLabelText("Produto")).toHaveValue("Selo Ouro");
   });
 
   it("lista WhatsApp, e-mail, endereço e link para o mapa", () => {

@@ -7,6 +7,7 @@ import { Experience } from "./sections/experience";
 import { Hero } from "./sections/hero";
 import { Journey } from "./sections/journey";
 import { Pains } from "./sections/pains";
+import { Products } from "./sections/products";
 import { Projects } from "./sections/projects";
 import { Services } from "./sections/services";
 import { FaqSection, TestimonialsSection } from "./sections/social-proof";
@@ -27,6 +28,7 @@ export function HomePage() {
       <Services />
       <Journey />
       <Audiences />
+      <Products />
       <Areas />
       <Differentials />
       <Experience />

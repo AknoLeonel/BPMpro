@@ -61,7 +61,7 @@ export function FaqList({ items = faq.items }: FaqListProps) {
                 id={buttonId}
                 type="button"
                 aria-expanded={isOpen}
-                aria-controls={panelId}
+                aria-controls={isOpen ? panelId : undefined}
                 onClick={() => setOpen(isOpen ? null : i)}
                 onKeyDown={(event) => onKeyDown(event, i)}
                 className={cn(

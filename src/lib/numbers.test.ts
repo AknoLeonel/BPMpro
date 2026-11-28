@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { experience, hasVisibleProjects, heroSeals, onlyVisible, projectItems, stats } from "./numbers";
+import { experience, heroSeals, onlyVisible, projectItems, stats } from "./numbers";
 import { footer, navItems } from "./site-config";
 
 describe("numbers.ts (arquivo de dados)", () => {
@@ -33,10 +33,19 @@ describe("numbers.ts (arquivo de dados)", () => {
     }
   });
 
-  it("enquanto nenhum projeto é visível, o menu e o rodapé não apontam para #projetos", () => {
-    expect(hasVisibleProjects).toBe(false);
-    expect(navItems.map((item) => item.href)).not.toContain("#projetos");
-    expect(footer.links.map((link) => link.href)).not.toContain("/#projetos");
-    expect(navItems.map((item) => item.href)).toContain("#onde-atuamos");
+  it("os projetos começam todos ocultos até as autorizações", () => {
+    expect(projectItems.every((project) => !project.visible)).toBe(true);
+  });
+
+  it("o menu segue o mapa do site da versão 2 (páginas, não âncoras)", () => {
+    expect(navItems.map((item) => item.href)).toEqual([
+      "/servicos",
+      "/produtos",
+      "/como-funciona",
+      "/projetos",
+      "/sobre",
+      "/contato",
+    ]);
+    expect(footer.links.map((link) => link.href)).toContain("/politica-de-privacidade");
   });
 });

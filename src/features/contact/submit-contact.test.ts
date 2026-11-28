@@ -16,6 +16,7 @@ const valid = {
   email: "joao@instituto.org",
   area: "Cultura",
   stage: "Tenho um recurso indicado",
+  product: "Selo Ouro",
   message: "Gostaria de um diagnóstico.",
   consent: "on",
   website: "",
@@ -49,14 +50,25 @@ describe("submitContact (integração schema + entrega + logger)", () => {
     expect(state).toEqual({ status: "success", message: contact.success });
   });
 
-  it("registra apenas área e etapa no log (LGPD)", async () => {
+  it("registra apenas área, etapa e produto no log (LGPD)", async () => {
     deliver.mockResolvedValue();
     await submitContact(valid, deliver);
     expect(logger.info).toHaveBeenCalledTimes(1);
     const [event, payload] = vi.mocked(logger.info).mock.calls[0] ?? [];
     expect(event).toBe("contact.received");
-    expect(Object.keys(payload ?? {}).sort()).toEqual(["area", "stage"]);
-    expect(payload).toEqual({ area: "Cultura", stage: "Tenho um recurso indicado" });
+    expect(Object.keys(payload ?? {}).sort()).toEqual(["area", "product", "stage"]);
+    expect(payload).toEqual({ area: "Cultura", stage: "Tenho um recurso indicado", product: "Selo Ouro" });
+    for (const value of personalValues) expect(loggedText()).not.toContain(value);
+  });
+
+  it("sem produto escolhido, registra product nulo (sem dados pessoais)", async () => {
+    deliver.mockResolvedValue();
+    await submitContact({ ...valid, product: "" }, deliver);
+    expect(logger.info).toHaveBeenCalledWith("contact.received", {
+      area: "Cultura",
+      stage: "Tenho um recurso indicado",
+      product: null,
+    });
     for (const value of personalValues) expect(loggedText()).not.toContain(value);
   });
 

@@ -15,6 +15,10 @@ const nextConfig: NextConfig = {
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
   },
+  async redirects() {
+    // Versão 2: a política mudou de endereço (ver `routes.privacy`); links antigos continuam funcionando.
+    return [{ source: "/privacidade", destination: "/politica-de-privacidade", permanent: true }];
+  },
 };
 
 // Sentry só envia source maps quando SENTRY_AUTH_TOKEN existe (CI/deploy).

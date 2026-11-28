@@ -7,6 +7,8 @@ import { type ReactNode, useActionState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { WhatsAppLink } from "@/components/ui/whatsapp-link";
 import { duration, easing, exitDuration } from "@/lib/motion";
+import { type ProductOption, productOptions } from "@/lib/products";
+import { routes } from "@/lib/routes";
 import { contact, whatsappMessages } from "@/lib/site-config";
 import { cn } from "@/lib/utils";
 import { sendContact } from "./actions";
@@ -22,6 +24,7 @@ const fieldOrder = [
   "email",
   "area",
   "stage",
+  "product",
   "message",
   "consent",
 ] as const satisfies readonly ContactField[];
@@ -135,6 +138,32 @@ function SelectControl({
   );
 }
 
+/** Produto de interesse — opcional; "" significa que a pessoa ainda não escolheu. */
+function ProductSelect({ value, errors }: { value: string; errors: FieldErrors }) {
+  const options: readonly string[] = productOptions;
+  return (
+    <div className="relative">
+      <select
+        defaultValue={options.includes(value) ? value : ""}
+        className={cn(controlClass, "appearance-none pr-11")}
+        {...ariaFor("product", errors)}
+      >
+        <option value="">Nenhum / ainda não sei</option>
+        {productOptions.map((option) => (
+          <option key={option} value={option}>
+            {option}
+          </option>
+        ))}
+      </select>
+      <ChevronDown
+        aria-hidden
+        strokeWidth={1.5}
+        className="pointer-events-none absolute top-1/2 right-4 size-5 -translate-y-1/2 text-ink-600"
+      />
+    </div>
+  );
+}
+
 function ConsentText() {
   const [before, after] = contact.consent.split(PRIVACY_LABEL);
   if (after === undefined) return <>{contact.consent}</>;
@@ -142,7 +171,7 @@ function ConsentText() {
     <>
       {before}
       <Link
-        href="/privacidade"
+        href={routes.privacy}
         className="font-medium text-brand-700 underline underline-offset-2 hover:text-brand-800 focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400"
       >
         {PRIVACY_LABEL}
@@ -154,7 +183,7 @@ function ConsentText() {
 
 const initialState: ContactState = { status: "idle" };
 
-export function ContactForm() {
+export function ContactForm({ defaultProduct }: { defaultProduct?: ProductOption } = {}) {
   const [state, action, pending] = useActionState(sendContact, initialState);
   const formRef = useRef<HTMLFormElement>(null);
   const errors: FieldErrors = state.status === "error" ? (state.fieldErrors ?? {}) : {};
@@ -281,6 +310,13 @@ export function ContactForm() {
                   name="stage"
                   options={contactStages}
                   value={values.stage}
+                  errors={errors}
+                />
+              </Field>
+              <Field name="product" label="Produto" error={errors.product} className="sm:col-span-2">
+                <ProductSelect
+                  key={`product-${responseCount.current}`}
+                  value={values.product ?? defaultProduct ?? ""}
                   errors={errors}
                 />
               </Field>

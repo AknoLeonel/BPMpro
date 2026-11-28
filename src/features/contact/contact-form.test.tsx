@@ -1,6 +1,8 @@
 import { fireEvent, render, screen, within } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { MotionProvider } from "@/components/motion/motion-provider";
+import { productOptions } from "@/lib/products";
+import { routes } from "@/lib/routes";
 import { contact } from "@/lib/site-config";
 import { ContactForm } from "./contact-form";
 import type { ContactState } from "./schema";
@@ -9,10 +11,10 @@ import { deliveryErrorMessage } from "./submit-contact";
 const sendContact = vi.fn<(prev: ContactState, data: FormData) => Promise<ContactState>>();
 vi.mock("./actions", () => ({ sendContact: (prev: ContactState, data: FormData) => sendContact(prev, data) }));
 
-const renderForm = () =>
+const renderForm = (props: Parameters<typeof ContactForm>[0] = {}) =>
   render(
     <MotionProvider>
-      <ContactForm />
+      <ContactForm {...props} />
     </MotionProvider>,
   );
 
@@ -32,6 +34,7 @@ describe("ContactForm (integração)", () => {
       "E-mail",
       "Área",
       "Em que etapa você está?",
+      "Produto",
       "Mensagem",
     ];
     const controls = labels.map((label) => screen.getByLabelText(label));
@@ -46,7 +49,37 @@ describe("ContactForm (integração)", () => {
     ).toEqual(["Selecione…", "Esporte", "Cultura", "Turismo", "Social"]);
     expect(screen.getByLabelText("Em que etapa você está?")).toHaveDisplayValue("Selecione…");
     expect(screen.getByRole("checkbox", { name: /autorizo o contato/i })).not.toBeChecked();
-    expect(screen.getByRole("link", { name: "Política de Privacidade" })).toHaveAttribute("href", "/privacidade");
+    expect(screen.getByRole("link", { name: "Política de Privacidade" })).toHaveAttribute("href", routes.privacy);
+    const product = screen.getByLabelText("Produto");
+    expect(product).not.toBeRequired();
+    expect(product).toHaveValue("");
+    expect(
+      within(product)
+        .getAllByRole("option")
+        .map((o) => o.textContent),
+    ).toEqual(["Nenhum / ainda não sei", ...productOptions]);
+  });
+
+  it("pré-seleciona o produto recebido por defaultProduct e o envia no FormData", async () => {
+    sendContact.mockResolvedValue({ status: "success", message: contact.success });
+    renderForm({ defaultProduct: "Selo Ouro" });
+    expect(screen.getByLabelText("Produto")).toHaveValue("Selo Ouro");
+    submit();
+    await screen.findByRole("status");
+    expect(sendContact.mock.calls[0]?.[1].get("product")).toBe("Selo Ouro");
+  });
+
+  it("após um erro, o produto devolvido pela action prevalece sobre o padrão", async () => {
+    sendContact.mockResolvedValue({
+      status: "error",
+      message: "Revise os campos destacados.",
+      fieldErrors: { name: "Informe seu nome completo." },
+      values: { product: "Selo Prata" },
+    });
+    renderForm({ defaultProduct: "Selo Ouro" });
+    submit();
+    await screen.findByText("Informe seu nome completo.");
+    expect(screen.getByLabelText("Produto")).toHaveValue("Selo Prata");
   });
 
   it("exibe erros de campo com aria-invalid, preserva valores e foca o primeiro inválido", async () => {

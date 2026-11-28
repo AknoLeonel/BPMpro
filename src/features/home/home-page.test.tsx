@@ -1,6 +1,7 @@
 import { act, render, screen } from "@testing-library/react";
 import { beforeAll, describe, expect, it, vi } from "vitest";
 import { MotionProvider } from "@/components/motion/motion-provider";
+import { seals, transparencyNotice } from "@/lib/products";
 import { areas, contact, differentials, hero, journey, pains, services } from "@/lib/site-config";
 import { MockIntersectionObserver } from "../../../tests/setup";
 import { HomePage } from "./home-page";
@@ -25,6 +26,7 @@ const funnel = [
   "servicos",
   "como-funciona",
   "para-quem",
+  "produtos",
   "areas",
   "diferenciais",
   "onde-atuamos",
@@ -63,11 +65,14 @@ describe("HomePage (integração)", () => {
       ...journey.steps.map((item) => item.title),
       ...areas.items.map((item) => item.title),
       ...differentials.items.map((item) => item.title),
+      seals.prata.name,
+      seals.ouro.name,
     ];
     for (const title of titles) {
       expect(screen.getAllByRole("heading", { name: title }).length).toBeGreaterThan(0);
     }
     expect(screen.getByText(pains.closing)).toBeInTheDocument();
+    expect(screen.getByText(transparencyNotice)).toBeInTheDocument();
   });
 
   it("respeita as regras: números de autoridade visíveis, itens ocultos fora da página", () => {

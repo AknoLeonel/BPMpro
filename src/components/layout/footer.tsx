@@ -1,8 +1,9 @@
-import { Mail, MapPin } from "lucide-react";
+import { Lock, Mail, MapPin } from "lucide-react";
 import Link from "next/link";
 import { BrandBand } from "@/components/ui/brand-shapes";
 import { Container } from "@/components/ui/container";
 import { WhatsAppLink } from "@/components/ui/whatsapp-link";
+import { restrictedAreaLink } from "@/lib/routes";
 import { footer, siteConfig, visibility, whatsappMessages } from "@/lib/site-config";
 import { cn } from "@/lib/utils";
 import { CurrentYear } from "./current-year";
@@ -80,10 +81,19 @@ export function Footer() {
             © <CurrentYear /> {siteConfig.fullName}
             {showCnpj ? <span data-testid="footer-cnpj"> · CNPJ {siteConfig.cnpj}</span> : null}
           </p>
-          <p className="flex items-center gap-3">
-            <span aria-hidden className="block h-0.5 w-6 bg-signal-500" />
-            {siteConfig.domain}
-          </p>
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-6">
+            <Link
+              href={restrictedAreaLink.href}
+              className={cn(linkClasses, "inline-flex min-h-11 items-center gap-2 self-start sm:self-auto")}
+            >
+              <Lock aria-hidden className="size-4 shrink-0" strokeWidth={1.5} />
+              {restrictedAreaLink.label}
+            </Link>
+            <p className="flex items-center gap-3">
+              <span aria-hidden className="block h-0.5 w-6 bg-signal-500" />
+              {siteConfig.domain}
+            </p>
+          </div>
         </div>
       </Container>
     </footer>

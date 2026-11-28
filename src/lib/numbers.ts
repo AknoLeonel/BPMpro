@@ -49,6 +49,8 @@ export interface Project extends Toggleable {
   image?: string;
 }
 
+// Stryker disable all: conteúdo editorial (textos, listas e rotas), sem lógica — mutar strings aqui não testa comportamento.
+
 /** Hero — selos abaixo dos botões, nesta ordem. */
 export const heroSeals: readonly Seal[] = [
   { text: "+ de R$ 16 milhões captados", visible: true },
@@ -119,7 +121,7 @@ export const experience = {
 
 /**
  * Projetos realizados — nome, modalidade e cidade/UF, sem valores.
- * Ficam ocultos até cada entidade autorizar. Sem nenhum visível, a seção (e o link do menu) some.
+ * Ficam ocultos até cada entidade autorizar. Sem nenhum visível, a seção da Home some e /projetos mostra um aviso.
  */
 export const projectItems: readonly Project[] = [
   { name: "Formando Cidadãos através do Basquete", modality: "Basquete", city: "Brasília/DF", visible: false },
@@ -135,6 +137,3 @@ export const projectItems: readonly Project[] = [
     visible: false,
   },
 ];
-
-/** `true` quando a galeria de projetos tem ao menos um item visível. */
-export const hasVisibleProjects = projectItems.some((project) => project.visible);

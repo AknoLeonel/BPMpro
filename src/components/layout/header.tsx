@@ -1,13 +1,15 @@
 "use client";
 
-import { Menu, X } from "lucide-react";
+import { Lock, Menu, X } from "lucide-react";
 import { AnimatePresence, m, useReducedMotion } from "motion/react";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { type KeyboardEvent as ReactKeyboardEvent, useCallback, useEffect, useRef, useState } from "react";
 import { useScrolledPast } from "@/components/motion/use-scrolled-past";
 import { Container } from "@/components/ui/container";
 import { WhatsAppLink } from "@/components/ui/whatsapp-link";
 import { distance, duration, easing, exitDuration, stagger } from "@/lib/motion";
+import { restrictedAreaLink, routes } from "@/lib/routes";
 import { contact, navItems, whatsappMessages } from "@/lib/site-config";
 import { cn } from "@/lib/utils";
 import { Logo } from "./logo";
@@ -15,61 +17,43 @@ import { Logo } from "./logo";
 /** Rolagem (px) a partir da qual o cabeçalho deixa de ser transparente. */
 const SOLID_AFTER = 24;
 
-const sectionIds = navItems.map((item) => item.href.replace(/^#/, ""));
+/**
+ * Rotas que começam com faixa escura (hero da home, PageHeader e heróis de produto):
+ * nelas o cabeçalho fica transparente no topo. As demais (cartão, política de privacidade,
+ * 404 e qualquer rota desconhecida) já começam com o cabeçalho sólido.
+ */
+const lightTopRoutes = new Set<string>([routes.card, routes.privacy]);
+const darkTopRoutes = new Set<string>(Object.values(routes).filter((path) => !lightTopRoutes.has(path)));
 
-/** Na home os itens são âncoras; nas demais rotas apontam para a home. */
-export function resolveNavHref(href: string, isHome: boolean): string {
-  return !isHome && href.startsWith("#") ? `/${href}` : href;
+function normalizePath(pathname: string | null): string {
+  if (!pathname || pathname === "/") return "/";
+  return pathname.replace(/\/+$/, "");
 }
 
-/**
- * Scroll-spy: devolve o id da seção que ocupa a faixa central da viewport.
- * Sem IntersectionObserver (ou fora da home) simplesmente não marca nenhum item.
- */
-function useActiveSection(ids: readonly string[], enabled: boolean): string | null {
-  const [active, setActive] = useState<string | null>(null);
+/** `true` quando a rota começa com faixa escura (cabeçalho transparente no topo). */
+export function startsOnDark(pathname: string | null): boolean {
+  return darkTopRoutes.has(normalizePath(pathname));
+}
 
-  useEffect(() => {
-    if (!enabled || typeof IntersectionObserver === "undefined") {
-      setActive(null);
-      return;
-    }
-    const elements = ids.map((id) => document.getElementById(id)).filter((el): el is HTMLElement => el !== null);
-    if (elements.length === 0) return;
-
-    const visible = new Set<string>();
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          const id = (entry.target as HTMLElement).id;
-          if (entry.isIntersecting) visible.add(id);
-          else visible.delete(id);
-        }
-        setActive(ids.find((id) => visible.has(id)) ?? null);
-      },
-      { rootMargin: "-45% 0px -50% 0px" },
-    );
-    for (const el of elements) observer.observe(el);
-    return () => observer.disconnect();
-  }, [ids, enabled]);
-
-  return active;
+/** Item ativo: rota exata ou subpágina (ex.: /produtos/ficha-limpa marca "Produtos"). */
+export function isNavActive(pathname: string | null, href: string): boolean {
+  const path = normalizePath(pathname);
+  if (href === "/") return path === "/";
+  return path === href || path.startsWith(`${href}/`);
 }
 
 const focusableSelector = 'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
 export function Header() {
   const pathname = usePathname();
-  const isHome = pathname === "/" || pathname === null;
   const [open, setOpen] = useState(false);
   const reduced = useReducedMotion() ?? false;
   const toggleRef = useRef<HTMLButtonElement>(null);
   const headerRef = useRef<HTMLElement>(null);
   const scrolledPast = useScrolledPast(SOLID_AFTER);
 
-  const activeId = useActiveSection(sectionIds, isHome);
-  /** Fora da home não há hero escuro: o cabeçalho já começa sólido. */
-  const solid = scrolledPast || !isHome;
+  /** Sem faixa escura no topo da rota, o cabeçalho já começa sólido. */
+  const solid = scrolledPast || !startsOnDark(pathname);
   /** Tom claro (logo e textos brancos) sobre o hero ou com o menu móvel aberto. */
   const light = open || !solid;
 
@@ -118,6 +102,7 @@ export function Header() {
   };
 
   const itemOffset = reduced ? 0 : distance.lg;
+  const restrictedActive = isNavActive(pathname, restrictedAreaLink.href);
 
   return (
     <m.header
@@ -140,16 +125,16 @@ export function Header() {
         <Logo tone={light ? "light" : "dark"} />
 
         <nav aria-label="Principal" className="hidden xl:block">
-          <ul className="flex items-center gap-1">
+          <ul className="flex items-center gap-0.5 2xl:gap-1">
             {navItems.map((item) => {
-              const isActive = activeId === item.href.slice(1);
+              const isActive = isNavActive(pathname, item.href);
               return (
                 <li key={item.href}>
-                  <a
-                    href={resolveNavHref(item.href, isHome)}
-                    aria-current={isActive ? "true" : undefined}
+                  <Link
+                    href={item.href}
+                    aria-current={isActive ? "page" : undefined}
                     className={cn(
-                      "group/nav relative inline-flex h-11 items-center whitespace-nowrap px-3.5 font-medium text-sm transition-colors 2xl:px-4",
+                      "group/nav relative inline-flex h-11 items-center whitespace-nowrap px-3 font-medium text-sm transition-colors 2xl:px-4",
                       "rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400",
                       light
                         ? "text-white/85 hover:text-white"
@@ -161,11 +146,11 @@ export function Header() {
                     <span
                       aria-hidden
                       className={cn(
-                        "absolute inset-x-3.5 bottom-2 h-0.5 origin-left bg-signal-500 transition-transform duration-300 ease-out motion-reduce:transition-none 2xl:inset-x-4",
+                        "absolute inset-x-3 bottom-2 h-0.5 origin-left bg-signal-500 transition-transform duration-300 ease-out motion-reduce:transition-none 2xl:inset-x-4",
                         isActive ? "scale-x-100" : "scale-x-0 group-hover/nav:scale-x-100 group-hover/nav:opacity-40",
                       )}
                     />
-                  </a>
+                  </Link>
                 </li>
               );
             })}
@@ -173,6 +158,20 @@ export function Header() {
         </nav>
 
         <div className="flex items-center gap-2">
+          <Link
+            href={restrictedAreaLink.href}
+            aria-current={restrictedActive ? "page" : undefined}
+            className={cn(
+              "hidden h-11 items-center gap-1.5 whitespace-nowrap rounded-full px-3 font-medium text-[0.8125rem] transition-colors xl:inline-flex",
+              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400",
+              light
+                ? "text-white/85 hover:bg-white/10 hover:text-white"
+                : "text-ink-700 hover:bg-ink-100 hover:text-ink-950 focus-visible:ring-offset-2",
+            )}
+          >
+            <Lock aria-hidden className="size-3.5 shrink-0" strokeWidth={1.5} />
+            {restrictedAreaLink.label}
+          </Link>
           <WhatsAppLink
             context="header"
             message={whatsappMessages.default}
@@ -236,7 +235,7 @@ export function Header() {
                 variants={{ visible: { transition: { staggerChildren: stagger.tight, delayChildren: stagger.tight } } }}
               >
                 {navItems.map((item, index) => {
-                  const isActive = activeId === item.href.slice(1);
+                  const isActive = isNavActive(pathname, item.href);
                   return (
                     <m.li
                       key={item.href}
@@ -250,9 +249,9 @@ export function Header() {
                         },
                       }}
                     >
-                      <a
-                        href={resolveNavHref(item.href, isHome)}
-                        aria-current={isActive ? "true" : undefined}
+                      <Link
+                        href={item.href}
+                        aria-current={isActive ? "page" : undefined}
                         onClick={() => close(false)}
                         className="group/link flex min-h-16 items-center gap-4 py-3 font-display text-[1.75rem] text-white leading-tight transition-colors hover:text-brand-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400"
                       >
@@ -265,7 +264,7 @@ export function Header() {
                             <span aria-hidden className="absolute inset-x-0 -bottom-1 h-0.5 bg-signal-500" />
                           ) : null}
                         </span>
-                      </a>
+                      </Link>
                     </m.li>
                   );
                 })}
@@ -283,6 +282,15 @@ export function Header() {
                   },
                 }}
               >
+                <Link
+                  href={restrictedAreaLink.href}
+                  aria-current={restrictedActive ? "page" : undefined}
+                  onClick={() => close(false)}
+                  className="mb-6 inline-flex min-h-11 items-center gap-2 rounded-sm font-medium text-ink-300 text-sm transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-400"
+                >
+                  <Lock aria-hidden className="size-4 shrink-0" strokeWidth={1.5} />
+                  {restrictedAreaLink.label}
+                </Link>
                 <p className="max-w-sm text-ink-400 text-sm leading-relaxed">{contact.subtitle}</p>
                 <WhatsAppLink
                   context="header-mobile"
