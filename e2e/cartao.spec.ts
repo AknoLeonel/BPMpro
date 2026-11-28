@@ -58,12 +58,12 @@ test.describe("Cartão digital", () => {
 
 test.describe("Política de Privacidade", () => {
   test("renderiza o título principal", async ({ page }) => {
-    await page.goto("/privacidade");
+    await page.goto("/politica-de-privacidade");
     await expect(page.getByRole("heading", { level: 1 })).toHaveText("Política de Privacidade");
   });
 
   test("sem violações de acessibilidade WCAG A/AA", async ({ page }) => {
-    await page.goto("/privacidade");
+    await page.goto("/politica-de-privacidade");
     await expectNoAxeViolations(page);
   });
 });

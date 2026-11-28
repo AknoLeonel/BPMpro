@@ -7,6 +7,7 @@ import { Stagger, StaggerItem } from "@/components/motion/stagger";
 import { Container } from "@/components/ui/container";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { WhatsAppLink } from "@/components/ui/whatsapp-link";
+import type { ProductOption } from "@/lib/products";
 import { contact, siteConfig, whatsappMessages } from "@/lib/site-config";
 import { ContactFormSkeleton } from "./skeletons";
 
@@ -25,20 +26,24 @@ function MapPlaceholder() {
   return <div aria-hidden data-testid="map-skeleton" className="aspect-[4/3] w-full bg-brand-600 sm:aspect-[21/9]" />;
 }
 
+export interface ContactProps {
+  /** Produto pré-selecionado no formulário (ex.: páginas de selo). */
+  defaultProduct?: ProductOption;
+  /** Id da seção; o título usa `${id}-title`. */
+  id?: string;
+}
+
 /** Seção 13 — chamada final, contatos, formulário e mapa. */
-export function Contact() {
+export function Contact({ defaultProduct, id = "contato" }: ContactProps = {}) {
+  const titleId = `${id}-title`;
   return (
-    <section
-      id="contato"
-      aria-labelledby="contato-title"
-      className="relative overflow-hidden bg-brand-500 py-20 lg:py-28"
-    >
+    <section id={id} aria-labelledby={titleId} className="relative overflow-hidden bg-brand-500 py-20 lg:py-28">
       <BrandSymbol className="pointer-events-none absolute -top-10 -right-16 h-80 text-brand-600 sm:h-[28rem] lg:-right-10" />
       <Container className="relative">
         <div className="grid gap-12 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
           <div>
             <SectionHeading
-              id="contato-title"
+              id={titleId}
               tone="dark"
               align="left"
               title={contact.title}
@@ -79,7 +84,7 @@ export function Contact() {
           <Reveal direction="up" delay={0.1}>
             <div className="rounded-lg bg-white p-6 shadow-elevation-3 sm:p-8 lg:p-10">
               <LazySection fallback={<ContactFormSkeleton />}>
-                <ContactForm />
+                <ContactForm defaultProduct={defaultProduct} />
               </LazySection>
             </div>
           </Reveal>

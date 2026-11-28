@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { productOptions } from "@/lib/products";
 
 /** Áreas de atuação, conforme o documento do site. */
 export const contactAreas = ["Esporte", "Cultura", "Turismo", "Social"] as const;
@@ -72,6 +73,8 @@ const contactSchema = z.object({
   email: z.string().trim().pipe(z.email("Informe um e-mail válido.")),
   area: z.enum(contactAreas, { error: "Selecione a área do projeto." }),
   stage: z.enum(contactStages, { error: "Selecione a etapa em que você está." }),
+  /** Produto de interesse (opcional): "" = ainda não escolheu. */
+  product: z.union([z.enum(productOptions), z.literal("")], { error: "Selecione um produto da lista." }).optional(),
   message: z.string().trim().max(2000, "A mensagem pode ter até 2000 caracteres.").optional(),
   consent: z
     .unknown()

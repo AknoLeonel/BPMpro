@@ -37,6 +37,7 @@ test.describe("Home", () => {
       "servicos",
       "como-funciona",
       "para-quem",
+      "produtos",
       "areas",
       "diferenciais",
       "onde-atuamos",
@@ -73,18 +74,87 @@ test.describe("Home", () => {
     await expect(page.getByTestId("contact-skeleton")).toHaveCount(0);
   });
 
-  test("navegação por âncora leva à seção", async ({ page, isMobile }) => {
+  test("menu leva às páginas do site (Produtos abre /produtos)", async ({ page, isMobile }) => {
     await page.goto("/");
     if (isMobile) {
       await page.getByRole("button", { name: "Abrir menu" }).click();
-      await page
-        .getByRole("navigation", { name: "Menu móvel" })
-        .getByRole("link", { name: /Dúvidas/ })
-        .click();
+      const panel = page.getByRole("navigation", { name: "Menu móvel" });
+      await expect(panel.getByRole("link", { name: "Área restrita" })).toHaveAttribute("href", "/area-restrita");
+      await panel.getByRole("link", { name: /Produtos/ }).click();
     } else {
-      await page.getByRole("navigation", { name: "Principal" }).getByRole("link", { name: "Dúvidas" }).click();
+      const nav = page.getByRole("navigation", { name: "Principal" });
+      await expect(nav.getByRole("link")).toHaveText([
+        "Serviços",
+        "Produtos",
+        "Como funciona",
+        "Projetos",
+        "Sobre",
+        "Contato",
+      ]);
+      await expect(page.getByRole("banner").getByRole("link", { name: "Área restrita" })).toBeVisible();
+      await nav.getByRole("link", { name: "Produtos" }).click();
     }
-    await expect(page).toHaveURL(/#duvidas$/);
+    await expect(page).toHaveURL(/\/produtos$/);
+    if (isMobile) {
+      await page.getByRole("button", { name: "Abrir menu" }).click();
+      await expect(
+        page.getByRole("navigation", { name: "Menu móvel" }).getByRole("link", { name: /Produtos/ }),
+      ).toHaveAttribute("aria-current", "page");
+    } else {
+      await expect(
+        page.getByRole("navigation", { name: "Principal" }).getByRole("link", { name: "Produtos" }),
+      ).toHaveAttribute("aria-current", "page");
+    }
+  });
+
+  test("menu desktop cabe em uma linha a 1280px", async ({ page, isMobile }) => {
+    test.skip(isMobile, "menu desktop");
+    await page.setViewportSize({ width: 1280, height: 800 });
+    await page.goto("/");
+    const rects = await page
+      .getByRole("banner")
+      .locator("nav[aria-label='Principal'] a, a[href='/area-restrita'], a[data-whatsapp-context='header']")
+      .evaluateAll((els) =>
+        els.map((el) => {
+          const r = el.getBoundingClientRect();
+          return { top: r.top, height: r.height, right: r.right, left: r.left };
+        }),
+      );
+    expect(rects).toHaveLength(8);
+    const first = rects[0];
+    if (!first) throw new Error("menu vazio");
+    for (const rect of rects) {
+      // Mesma linha, sem quebra de texto e sem passar da borda da janela.
+      expect(Math.abs(rect.top - first.top)).toBeLessThanOrEqual(4);
+      expect(rect.height).toBeLessThanOrEqual(48);
+      expect(rect.right).toBeLessThanOrEqual(1280);
+    }
+    // Sem sobreposição: cada item começa depois do anterior.
+    for (let i = 1; i < rects.length; i++) {
+      const prev = rects[i - 1];
+      const curr = rects[i];
+      if (prev && curr) expect(curr.left).toBeGreaterThanOrEqual(prev.right - 1);
+    }
+  });
+
+  test("home mostra a seção Produtos com os dois selos", async ({ page }) => {
+    await page.goto("/");
+    const section = page.locator("#produtos");
+    await section.scrollIntoViewIfNeeded();
+    await expect(section.getByRole("heading", { level: 2 })).toHaveText("Sua entidade pronta antes do recurso chegar.");
+    await expect(section.getByRole("link", { name: "Quero o Selo Prata" })).toHaveAttribute(
+      "href",
+      "/produtos/ficha-limpa/prata",
+    );
+    await expect(section.getByRole("link", { name: "Quero o Selo Ouro" })).toHaveAttribute(
+      "href",
+      "/produtos/ficha-limpa/ouro",
+    );
+    await expect(section.getByText("não substituem certidões oficiais", { exact: false })).toBeVisible();
+  });
+
+  test("navegação por âncora leva à seção", async ({ page }) => {
+    await page.goto("/#duvidas");
     await expect(page.getByRole("heading", { name: "Dúvidas frequentes" })).toBeInViewport();
   });
 
@@ -149,19 +219,10 @@ test.describe("Home", () => {
     await expect(page.locator("#projetos")).toHaveCount(0);
   });
 
-  test("seção Onde atuamos: órgãos em texto, fontes em chips e âncora no menu", async ({ page, isMobile }) => {
-    await page.goto("/");
-    if (isMobile) {
-      await page.getByRole("button", { name: "Abrir menu" }).click();
-      await page
-        .getByRole("navigation", { name: "Menu móvel" })
-        .getByRole("link", { name: /Onde atuamos/ })
-        .click();
-    } else {
-      await page.getByRole("navigation", { name: "Principal" }).getByRole("link", { name: "Onde atuamos" }).click();
-    }
-    await expect(page).toHaveURL(/#onde-atuamos$/);
+  test("seção Onde atuamos: órgãos em texto e fontes em chips", async ({ page }) => {
+    await page.goto("/#onde-atuamos");
     const section = page.locator("#onde-atuamos");
+    await section.scrollIntoViewIfNeeded();
     await expect(section.getByRole("heading", { level: 2 })).toHaveText("Onde já colocamos projetos em movimento");
     await expect(
       section.getByRole("list", { name: "Órgãos com projetos aprovados" }).getByRole("listitem"),
@@ -170,7 +231,6 @@ test.describe("Home", () => {
       section.getByRole("list", { name: "Fontes de recurso com que trabalhamos" }).getByRole("listitem"),
     ).toHaveCount(3);
     await expect(section.locator("img")).toHaveCount(0);
-    await expect(page.getByRole("link", { name: "Projetos", exact: true })).toHaveCount(0);
   });
 
   test("botão de WhatsApp entra após rolar a página", async ({ page }) => {

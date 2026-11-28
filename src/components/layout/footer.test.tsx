@@ -19,7 +19,23 @@ describe("Footer", () => {
     for (const item of footerContent.links) {
       expect(within(nav).getByRole("link", { name: item.label })).toHaveAttribute("href", item.href);
     }
-    expect(within(nav).getByRole("link", { name: "Política de Privacidade" })).toHaveAttribute("href", "/privacidade");
+    expect(within(nav).getByRole("link", { name: "Política de Privacidade" })).toHaveAttribute(
+      "href",
+      "/politica-de-privacidade",
+    );
+    expect(within(nav).getByRole("link", { name: "Ficha Limpa da Entidade" })).toHaveAttribute(
+      "href",
+      "/produtos/ficha-limpa",
+    );
+  });
+
+  it("tem um link discreto para a Área restrita fora da navegação principal", () => {
+    renderFooter();
+    const link = screen.getByRole("link", { name: "Área restrita" });
+    expect(link).toHaveAttribute("href", "/area-restrita");
+    expect(
+      within(screen.getByRole("navigation", { name: "Rodapé" })).queryByRole("link", { name: "Área restrita" }),
+    ).toBeNull();
   });
 
   it("mostra a assinatura, o logotipo, o domínio e o ano", () => {

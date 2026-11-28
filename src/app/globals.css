@@ -49,6 +49,19 @@
 
   --color-whatsapp: #25d366;
 
+  /*
+   * Selos Ficha Limpa — tons PROVISÓRIOS de prata e ouro (as cores e o acabamento finais
+   * virão do manual da marca). Texto sobre eles sempre em ink-950 (contraste AA).
+   */
+  --color-silver-100: #f1f3f6;
+  --color-silver-300: #d5dae1;
+  --color-silver-500: #aab2bd;
+  --color-silver-700: #6b7480;
+  --color-gold-100: #fbf1d3;
+  --color-gold-300: #f2d37a;
+  --color-gold-500: #d9a52b;
+  --color-gold-700: #8f6a12;
+
   --radius-sm: 6px;
   --radius-md: 12px;
   --radius-lg: 24px;

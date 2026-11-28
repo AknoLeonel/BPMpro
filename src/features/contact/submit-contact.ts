@@ -11,7 +11,7 @@ export const deliveryErrorMessage =
 /**
  * Regra de negócio do contato, isolada do framework para ser testável.
  * A entrega (CRM, e-mail, webhook) é injetada.
- * LGPD: os logs nunca carregam dados pessoais — apenas área e etapa.
+ * LGPD: os logs nunca carregam dados pessoais — apenas área, etapa e produto.
  */
 export async function submitContact(raw: Record<string, unknown>, deliver: ContactDelivery): Promise<ContactState> {
   // Devolvidos em todo erro: o React 19 reinicia o formulário após a action.
@@ -27,7 +27,11 @@ export async function submitContact(raw: Record<string, unknown>, deliver: Conta
   }
   try {
     await deliver(parsed.data);
-    logger.info("contact.received", { area: parsed.data.area, stage: parsed.data.stage });
+    logger.info("contact.received", {
+      area: parsed.data.area,
+      stage: parsed.data.stage,
+      product: parsed.data.product || null,
+    });
     return { status: "success", message: contact.success };
   } catch (error) {
     logger.error("contact.delivery_failed", { error: error instanceof Error ? error.message : String(error) });

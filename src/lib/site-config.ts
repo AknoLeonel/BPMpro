@@ -12,7 +12,8 @@
  *
  * Números de autoridade, órgãos, fontes de recurso e projetos ficam em `numbers.ts`.
  */
-import { hasVisibleProjects, sportsSpecialistText } from "./numbers";
+import { sportsSpecialistText } from "./numbers";
+import { mainNav, routes } from "./routes";
 
 export const siteConfig = {
   name: "BPM Pro",
@@ -52,20 +53,8 @@ export const whatsappMessages = {
   faq: "Olá! Tenho uma dúvida sobre projetos com recursos públicos.",
 } as const;
 
-/** Links para "Projetos" somem enquanto nenhum projeto estiver visível (a seção não é exibida). */
-function withProjects<T extends { href: string }>(links: readonly T[]): T[] {
-  return links.filter((link) => hasVisibleProjects || !link.href.endsWith("#projetos"));
-}
-
-export const navItems = withProjects([
-  { href: "#servicos", label: "Serviços" },
-  { href: "#como-funciona", label: "Como funciona" },
-  { href: "#para-quem", label: "Para quem" },
-  { href: "#onde-atuamos", label: "Onde atuamos" },
-  { href: "#projetos", label: "Projetos" },
-  { href: "#duvidas", label: "Dúvidas" },
-  { href: "#contato", label: "Contato" },
-]);
+/** Menu principal (mapa do site em `routes.ts`). */
+export const navItems = mainNav;
 
 export const hero = {
   eyebrow: "Projetos com recursos públicos de ponta a ponta",
@@ -106,7 +95,7 @@ export const pains = {
 export const about = {
   title: "Um único parceiro, do edital ao último comprovante.",
   text: "A Brasil Projetos em Movimento elabora e acompanha projetos com recursos públicos para associações, ligas, federações, clubes e institutos. Nosso foco é o esporte, com atuação também em cultura, turismo e projetos sociais. Cuidamos de cada etapa para que a sua entidade se concentre no que faz de melhor: colocar gente em movimento.",
-  cta: { label: "Conheça nossos serviços", href: "#servicos" },
+  cta: { label: "Conheça nossos serviços", href: routes.services },
 } as const;
 
 export const services = {
@@ -343,13 +332,15 @@ export const contact = {
 
 export const footer = {
   signature: "Resultado comprovado, do edital à prestação de contas.",
-  links: withProjects([
-    { href: "/#servicos", label: "Serviços" },
-    { href: "/#como-funciona", label: "Como funciona" },
-    { href: "/#onde-atuamos", label: "Onde atuamos" },
-    { href: "/#projetos", label: "Projetos" },
-    { href: "/#duvidas", label: "Dúvidas" },
-    { href: "/#contato", label: "Contato" },
-    { href: "/privacidade", label: "Política de Privacidade" },
-  ]),
-};
+  links: [
+    { href: routes.services, label: "Serviços" },
+    { href: routes.products, label: "Produtos" },
+    { href: routes.fichaLimpa, label: "Ficha Limpa da Entidade" },
+    { href: routes.howItWorks, label: "Como funciona" },
+    { href: routes.projects, label: "Projetos" },
+    { href: routes.about, label: "Sobre" },
+    { href: routes.faq, label: "Dúvidas" },
+    { href: routes.contact, label: "Contato" },
+    { href: routes.privacy, label: "Política de Privacidade" },
+  ],
+} as const;
