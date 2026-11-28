@@ -3,6 +3,8 @@
  * Documento "Site BPM Pro: versão 2", item 1.
  */
 
+// Stryker disable all: conteúdo editorial (textos, listas e rotas), sem lógica — mutar strings aqui não testa comportamento.
+
 export const routes = {
   home: "/",
   services: "/servicos",

@@ -15,6 +15,8 @@
 import { sportsSpecialistText } from "./numbers";
 import { mainNav, routes } from "./routes";
 
+// Stryker disable all: conteúdo editorial (textos, listas e rotas), sem lógica — mutar strings aqui não testa comportamento.
+
 export const siteConfig = {
   name: "BPM Pro",
   shortName: "BPM",

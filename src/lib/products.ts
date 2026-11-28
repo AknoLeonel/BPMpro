@@ -7,6 +7,8 @@
  */
 import type { SealLevel } from "./ficha-limpa-checklist";
 
+// Stryker disable all: conteúdo editorial (textos, listas e rotas), sem lógica — mutar strings aqui não testa comportamento.
+
 export type { SealLevel } from "./ficha-limpa-checklist";
 
 /** Valor do campo "Produto" do formulário de contato. */

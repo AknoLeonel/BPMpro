@@ -55,6 +55,7 @@ export interface ChecklistGroup {
   items: readonly ChecklistItem[];
 }
 
+// Stryker disable all: conteúdo editorial (textos, listas e rotas), sem lógica — mutar strings aqui não testa comportamento.
 const BOTH: readonly SealLevel[] = ["prata", "ouro"];
 const OURO: readonly SealLevel[] = ["ouro"];
 
@@ -421,6 +422,8 @@ export const directorsChecklist = {
   ],
   personalDocuments: "Junto: RG/CNH, CPF e comprovante de residência dos últimos 3 meses de cada dirigente.",
 } as const;
+
+// Stryker restore all
 
 /** Itens de um selo, mantendo os grupos (o Prata não tem o Pilar 3). */
 export function groupsForLevel(level: SealLevel): ChecklistGroup[] {

@@ -49,6 +49,8 @@ export interface Project extends Toggleable {
   image?: string;
 }
 
+// Stryker disable all: conteúdo editorial (textos, listas e rotas), sem lógica — mutar strings aqui não testa comportamento.
+
 /** Hero — selos abaixo dos botões, nesta ordem. */
 export const heroSeals: readonly Seal[] = [
   { text: "+ de R$ 16 milhões captados", visible: true },
