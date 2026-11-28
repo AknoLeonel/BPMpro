@@ -155,7 +155,8 @@ test.describe("Home", () => {
 
   test("navegação por âncora leva à seção", async ({ page }) => {
     await page.goto("/#duvidas");
-    await expect(page.getByRole("heading", { name: "Dúvidas frequentes" })).toBeInViewport();
+    // O salto acontece assim que o HTML da seção chega; no CI lento isso pode passar dos 5s padrão.
+    await expect(page.getByRole("heading", { name: "Dúvidas frequentes" })).toBeInViewport({ timeout: 10_000 });
   });
 
   test("dúvidas: acordeão abre uma resposta por vez", async ({ page }) => {

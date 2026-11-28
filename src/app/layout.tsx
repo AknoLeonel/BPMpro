@@ -43,6 +43,13 @@ export const viewport: Viewport = {
   themeColor: "#111111",
 };
 
+/**
+ * Salto imediato para a âncora de links compartilhados (ex.: /#duvidas), assim que o HTML do
+ * conteúdo é lido — sem esperar a página ficar interativa (em aparelhos lentos isso leva segundos).
+ * `ScrollToHash` continua como reforço depois da hidratação.
+ */
+const jumpToHashScript = `(function(){try{var h=location.hash.slice(1);if(!h)return;var el=document.getElementById(decodeURIComponent(h));if(el)el.scrollIntoView({block:"start",behavior:"instant"});}catch(e){}})();`;
+
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "Organization",
@@ -73,6 +80,10 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           <WhatsAppButton />
           <ScrollToHash />
         </MotionProvider>
+        <script
+          // biome-ignore lint/security/noDangerouslySetInnerHtml: script estático, sem dados externos
+          dangerouslySetInnerHTML={{ __html: jumpToHashScript }}
+        />
         <BrowserObservability />
         <script
           type="application/ld+json"
